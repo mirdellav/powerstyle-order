@@ -1,3 +1,11 @@
+# Powerstyle-0rder | Complete Non-Truncated Pre-baked Application Code
+
+Bu dosyada envanter listenizdeki **225 adet profesyonel berber ürününün tamamı** (Andis, Arko, Astra, Wahl, TSF vb.) ve TSF Shaving Gel'e ait Sapphire, Cristal ve Golden varyasyonları kodun içerisine doğrudan **gömülmüştür (Pre-baked)**. 
+
+Bunu MacBook cihazınızda kopyalayıp doğrudan **`index.html`** olarak kaydettiğinizde, **hiçbir CSV yüklemesi yapmanıza gerek kalmadan** tüm ürünleriniz hazır olarak yüklenecektir!
+
+## index.html Kodu:
+```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -107,6 +115,9 @@
                     <i class="fa-solid fa-barcode mr-2"></i> Camera Barcode Scanner
                 </h3>
                 <div id="interactive-reader" class="w-full bg-black rounded-xl overflow-hidden border border-slate-800"></div>
+                <div class="mt-3 text-xs text-slate-400 text-center">
+                    Align the product barcode within the camera viewfinder to scan.
+                </div>
             </div>
 
             <!-- Custom Barcode Association Dialog -->
@@ -139,24 +150,12 @@
             </div>
 
             <div class="flex items-center justify-between px-1">
-                <span class="text-xs text-slate-400" id="product-count-display">No catalog loaded yet.</span>
+                <span class="text-xs text-slate-400" id="product-count-display">Showing 0 products</span>
             </div>
 
             <!-- Products List Container -->
             <div class="flex-grow overflow-y-auto max-h-[60vh] lg:max-h-[70vh] space-y-3 pr-1" id="products-list-container">
-                <!-- Landing view helper when catalog is empty -->
-                <div class="text-center py-16 bg-slate-950 border border-slate-800 rounded-3xl p-6">
-                    <div class="w-16 h-16 bg-amber-500/10 text-amber-500 rounded-2xl flex items-center justify-center mx-auto text-3xl mb-4">
-                        <i class="fa-solid fa-file-csv"></i>
-                    </div>
-                    <h3 class="text-lg font-bold text-white">Import Your Product Catalog</h3>
-                    <p class="text-slate-400 text-xs mt-2 max-w-sm mx-auto leading-relaxed">
-                        Click the button below or "Load CSV" at the top to select your <code class="text-amber-400">export_items.csv</code> file.
-                    </p>
-                    <button onclick="triggerCSVImport()" class="mt-5 px-6 py-2.5 bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold rounded-xl text-xs uppercase tracking-wider transition duration-200">
-                        Choose export_items.csv
-                    </button>
-                </div>
+                <!-- Dynamically populated product cards -->
             </div>
 
         </section>
@@ -176,11 +175,11 @@
                     </div>
                 </div>
 
-                <div class="flex-grow overflow-y-auto p-4 space-y-3 min-h-[200px] max-h-[45vh]" id="order-items-container">
-                    <div class="flex flex-col items-center justify-center py-12 text-slate-500 text-center">
+                <div class="flex-grow overflow-y-auto p-4 space-y-3 min-h-[150px] max-h-[45vh]" id="order-items-container">
+                    <div class="flex flex-col items-center justify-center py-10 text-slate-500 text-center">
                         <i class="fa-solid fa-basket-shopping text-4xl mb-3 text-slate-700"></i>
-                        <p class="text-sm font-medium">Order sheet is empty.</p>
-                        <p class="text-xs mt-1 text-slate-600">Enter box/piece quantities to build order.</p>
+                        <p class="text-sm font-medium">Your order list is empty.</p>
+                        <p class="text-xs mt-1 text-slate-600">Add quantities to any product on the left to build order.</p>
                     </div>
                 </div>
 
@@ -188,12 +187,12 @@
                     
                     <div class="grid grid-cols-2 gap-2 text-xs">
                         <div>
-                            <label class="block text-slate-500 mb-1">Supplier / Dealer</label>
-                            <input type="text" id="order-dealer-name" placeholder="Supplier Name" value="Powerstyle Ltd"
+                            <label class="block text-slate-500 mb-1">Supplier / Dealer Name</label>
+                            <input type="text" id="order-dealer-name" placeholder="Enter Dealer Name" value="Powerstyle Ltd"
                                 class="w-full bg-slate-900 border border-slate-800 rounded-lg px-2.5 py-1.5 text-white focus:outline-none focus:ring-1 focus:ring-amber-500">
                         </div>
                         <div>
-                            <label class="block text-slate-500 mb-1">Order Notes</label>
+                            <label class="block text-slate-500 mb-1">Order Notes (Optional)</label>
                             <input type="text" id="order-notes-input" placeholder="Urgent, Ship together, etc." 
                                 class="w-full bg-slate-900 border border-slate-800 rounded-lg px-2.5 py-1.5 text-white focus:outline-none focus:ring-1 focus:ring-amber-500">
                         </div>
@@ -201,7 +200,7 @@
 
                     <div class="grid grid-cols-3 gap-2 pt-2">
                         <button onclick="exportToPDF()" class="py-2.5 bg-gradient-to-r from-red-600 to-red-500 hover:from-red-500 hover:to-red-400 text-white font-bold rounded-xl flex items-center justify-center space-x-1.5 transition text-xs uppercase tracking-wider">
-                            <i class="fa-solid fa-file-pdf text-sm"></i>
+                            <i class="fa-solid fa-file-pdf"></i>
                             <span>PDF</span>
                         </button>
                         
@@ -211,7 +210,7 @@
                         </button>
                         
                         <button onclick="shareMail()" class="py-2.5 bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-500 hover:to-blue-400 text-white font-bold rounded-xl flex items-center justify-center space-x-1.5 transition text-xs uppercase tracking-wider">
-                            <i class="fa-solid fa-envelope text-sm"></i>
+                            <i class="fa-solid fa-envelope"></i>
                             <span>Email</span>
                         </button>
                     </div>
@@ -242,11 +241,11 @@
                 <div>
                     <p class="text-slate-500 uppercase tracking-wider font-semibold text-[10px]">Prepared By</p>
                     <p class="font-bold text-slate-800 text-sm mt-0.5">Powerstyle Ltd Inventory Manager</p>
-                    <p class="text-slate-600">Internal Depot System</p>
+                    <p class="text-slate-600">Internal Store & Depot System</p>
                 </div>
                 <div>
                     <p class="text-slate-500 uppercase tracking-wider font-semibold text-[10px]">Order Notes</p>
-                    <p class="font-semibold text-slate-800 mt-0.5" id="pdf-notes-display">No notes provided.</p>
+                    <p class="font-semibold text-slate-800 mt-0.5" id="pdf-notes-display">No additional notes provided.</p>
                 </div>
             </div>
 
@@ -271,7 +270,7 @@
                 <div class="text-center w-48">
                     <p class="font-bold text-slate-700">Authorized Signature</p>
                     <div class="h-10 border-b border-dashed border-slate-300 my-2"></div>
-                    <p class="text-[10px]">Inventory Controller</p>
+                    <p class="text-[10px]">Inventory & Stores Controller</p>
                 </div>
             </div>
         </div>
@@ -283,7 +282,2072 @@
         let barcodeScanner = null;
         let isScannerActive = false;
         
-        let products = JSON.parse(localStorage.getItem('pso_catalog_products')) || [];
+        let products = JSON.parse(localStorage.getItem('pso_catalog_products')) || [
+  {
+    "id": "1005",
+    "name": "Andis Cool Care",
+    "sku": "1005",
+    "category": "DISENFECTANTS",
+    "barcode": "",
+    "packSize": 12,
+    "variations": []
+  },
+  {
+    "id": "10020",
+    "name": "Arko Aftershave 200ml",
+    "sku": "10020",
+    "category": "SHAVING",
+    "barcode": "",
+    "packSize": 12,
+    "variations": []
+  },
+  {
+    "id": "10019",
+    "name": "Arko Aftershave 250ml",
+    "sku": "10019",
+    "category": "SHAVING",
+    "barcode": "",
+    "packSize": 12,
+    "variations": []
+  },
+  {
+    "id": "1006",
+    "name": "Arko Cream 250ML",
+    "sku": "1006",
+    "category": "SKIN CARE",
+    "barcode": "",
+    "packSize": 12,
+    "variations": []
+  },
+  {
+    "id": "1007",
+    "name": "Arko Shaving Bowl",
+    "sku": "1007",
+    "category": "SHAVING",
+    "barcode": "",
+    "packSize": 12,
+    "variations": []
+  },
+  {
+    "id": "1009",
+    "name": "Arko Shaving Soap Stick (12pcs)",
+    "sku": "1009",
+    "category": "SHAVING",
+    "barcode": "",
+    "packSize": 12,
+    "variations": []
+  },
+  {
+    "id": "1008",
+    "name": "Arko shaving soap stick 1pcs",
+    "sku": "1008",
+    "category": "SHAVING",
+    "barcode": "",
+    "packSize": 12,
+    "variations": []
+  },
+  {
+    "id": "1010",
+    "name": "Astra Blade",
+    "sku": "1010",
+    "category": "SHAVING",
+    "barcode": "",
+    "packSize": 12,
+    "variations": []
+  },
+  {
+    "id": "10038",
+    "name": "Babyliss Fx shaver",
+    "sku": "10038",
+    "category": "Uncategorized",
+    "barcode": "",
+    "packSize": 12,
+    "variations": []
+  },
+  {
+    "id": "1013",
+    "name": "Babyliss Graphite 2.0 Replacement Blade",
+    "sku": "1013",
+    "category": "SPARE PARTS",
+    "barcode": "",
+    "packSize": 12,
+    "variations": []
+  },
+  {
+    "id": "1014",
+    "name": "Babyliss Replacement Foil",
+    "sku": "1014",
+    "category": "SPARE PARTS",
+    "barcode": "",
+    "packSize": 12,
+    "variations": []
+  },
+  {
+    "id": "1015",
+    "name": "Babyliss Replacement Foil + Cutter",
+    "sku": "1015",
+    "category": "SPARE PARTS",
+    "barcode": "",
+    "packSize": 12,
+    "variations": []
+  },
+  {
+    "id": "1011",
+    "name": "Babyliss Shaver",
+    "sku": "1011",
+    "category": "MACHINES",
+    "barcode": "",
+    "packSize": 12,
+    "variations": []
+  },
+  {
+    "id": "1016",
+    "name": "Babyliss Skeleton Gold Replacement Blade",
+    "sku": "1016",
+    "category": "SPARE PARTS",
+    "barcode": "",
+    "packSize": 12,
+    "variations": []
+  },
+  {
+    "id": "1017",
+    "name": "Babyliss Skeleton Silver  Replacement Blade",
+    "sku": "1017",
+    "category": "SPARE PARTS",
+    "barcode": "",
+    "packSize": 12,
+    "variations": []
+  },
+  {
+    "id": "1012",
+    "name": "Babyliss Skeleton Trimmer",
+    "sku": "1012",
+    "category": "MACHINES",
+    "barcode": "",
+    "packSize": 12,
+    "variations": []
+  },
+  {
+    "id": "1018",
+    "name": "Babyliss UV Foil+Cutter",
+    "sku": "1018",
+    "category": "SPARE PARTS",
+    "barcode": "",
+    "packSize": 12,
+    "variations": []
+  },
+  {
+    "id": "1019",
+    "name": "Babyliss UV- Shaver",
+    "sku": "1019",
+    "category": "MACHINES",
+    "barcode": "",
+    "packSize": 12,
+    "variations": []
+  },
+  {
+    "id": "1021",
+    "name": "Barber Apron",
+    "sku": "1021",
+    "category": "ACCESSORIES",
+    "barcode": "",
+    "packSize": 12,
+    "variations": []
+  },
+  {
+    "id": "1022",
+    "name": "Barber Pole Model A/C/E",
+    "sku": "1022",
+    "category": "ACCESSORIES",
+    "barcode": "",
+    "packSize": 12,
+    "variations": []
+  },
+  {
+    "id": "1023",
+    "name": "Barber powder (Talc free)",
+    "sku": "1023",
+    "category": "SKIN CARE",
+    "barcode": "",
+    "packSize": 12,
+    "variations": []
+  },
+  {
+    "id": "1024",
+    "name": "Barber Shield Apron",
+    "sku": "1024",
+    "category": "ACCESSORIES",
+    "barcode": "",
+    "packSize": 12,
+    "variations": []
+  },
+  {
+    "id": "1106",
+    "name": "Barbers Belt",
+    "sku": "1106",
+    "category": "ACCESSORIES",
+    "barcode": "",
+    "packSize": 12,
+    "variations": []
+  },
+  {
+    "id": "1025",
+    "name": "Barbicide Disinfection Concnt 1 gal",
+    "sku": "1025",
+    "category": "DISENFECTANTS",
+    "barcode": "",
+    "packSize": 12,
+    "variations": []
+  },
+  {
+    "id": "1026",
+    "name": "Barbicide Disinfection Concnt 473ml",
+    "sku": "1026",
+    "category": "DISENFECTANTS",
+    "barcode": "",
+    "packSize": 12,
+    "variations": []
+  },
+  {
+    "id": "1032",
+    "name": "BLACK & BROWN  HAIR SHAMPOO 400ml",
+    "sku": "1032",
+    "category": "HAIR PRODUCTS",
+    "barcode": "",
+    "packSize": 12,
+    "variations": []
+  },
+  {
+    "id": "1030",
+    "name": "Black Hair Fiber 27 gr",
+    "sku": "1030",
+    "category": "HAIR PRODUCTS",
+    "barcode": "",
+    "packSize": 12,
+    "variations": []
+  },
+  {
+    "id": "1031",
+    "name": "Black hair shampoo sachet",
+    "sku": "1031",
+    "category": "HAIR PRODUCTS",
+    "barcode": "",
+    "packSize": 12,
+    "variations": []
+  },
+  {
+    "id": "1033",
+    "name": "Cam follower Gamma",
+    "sku": "1033",
+    "category": "SPARE PARTS",
+    "barcode": "",
+    "packSize": 12,
+    "variations": []
+  },
+  {
+    "id": "1034",
+    "name": "Cape printed",
+    "sku": "1034",
+    "category": "ACCESSORIES",
+    "barcode": "",
+    "packSize": 12,
+    "variations": []
+  },
+  {
+    "id": "10034",
+    "name": "Charging Cable (Wahl-Babyliss-SC)",
+    "sku": "10034",
+    "category": "SPARE PARTS",
+    "barcode": "",
+    "packSize": 12,
+    "variations": []
+  },
+  {
+    "id": "10035",
+    "name": "Charging Stand (Wahl - Babyliss - SC)",
+    "sku": "10035",
+    "category": "SPARE PARTS",
+    "barcode": "",
+    "packSize": 12,
+    "variations": []
+  },
+  {
+    "id": "1035",
+    "name": "Clay Face Mask",
+    "sku": "1035",
+    "category": "SKIN CARE",
+    "barcode": "",
+    "packSize": 12,
+    "variations": []
+  },
+  {
+    "id": "1036",
+    "name": "Clipper Grips 3pcs",
+    "sku": "1036",
+    "category": "ACCESSORIES",
+    "barcode": "",
+    "packSize": 12,
+    "variations": []
+  },
+  {
+    "id": "1039",
+    "name": "Clipper Guard Holder",
+    "sku": "1039",
+    "category": "ACCESSORIES",
+    "barcode": "",
+    "packSize": 12,
+    "variations": []
+  },
+  {
+    "id": "1043",
+    "name": "Clippercide Spray 12oz",
+    "sku": "1043",
+    "category": "DISENFECTANTS",
+    "barcode": "",
+    "packSize": 12,
+    "variations": []
+  },
+  {
+    "id": "10014",
+    "name": "Cloathing Stone (Sap)",
+    "sku": "10014",
+    "category": "SHAVING",
+    "barcode": "",
+    "packSize": 12,
+    "variations": []
+  },
+  {
+    "id": "1044",
+    "name": "Comb Small",
+    "sku": "1044",
+    "category": "COMB/BRUSHES",
+    "barcode": "",
+    "packSize": 12,
+    "variations": []
+  },
+  {
+    "id": "1046",
+    "name": "Cree Hair Colour",
+    "sku": "1046",
+    "category": "HAIR PRODUCTS",
+    "barcode": "",
+    "packSize": 12,
+    "variations": []
+  },
+  {
+    "id": "10032",
+    "name": "Crèè Oxicreme 150ml",
+    "sku": "10032",
+    "category": "HAIR PRODUCTS",
+    "barcode": "",
+    "packSize": 12,
+    "variations": []
+  },
+  {
+    "id": "1119",
+    "name": "Cut Throat Plastic  Razor",
+    "sku": "1119",
+    "category": "SHAVING",
+    "barcode": "",
+    "packSize": 12,
+    "variations": []
+  },
+  {
+    "id": "10015",
+    "name": "Derby Double Edge",
+    "sku": "10015",
+    "category": "Uncategorized",
+    "barcode": "",
+    "packSize": 12,
+    "variations": []
+  },
+  {
+    "id": "1051",
+    "name": "Dorco Blade",
+    "sku": "1051",
+    "category": "SHAVING",
+    "barcode": "",
+    "packSize": 12,
+    "variations": []
+  },
+  {
+    "id": "1052",
+    "name": "Duru Lemon Aftershave 900 ml",
+    "sku": "1052",
+    "category": "SHAVING",
+    "barcode": "",
+    "packSize": 12,
+    "variations": []
+  },
+  {
+    "id": "10013",
+    "name": "Duru Lemon Cologne 150ml",
+    "sku": "10013",
+    "category": "Uncategorized",
+    "barcode": "",
+    "packSize": 12,
+    "variations": []
+  },
+  {
+    "id": "10018",
+    "name": "Ear Candles",
+    "sku": "10018",
+    "category": "Uncategorized",
+    "barcode": "",
+    "packSize": 12,
+    "variations": []
+  },
+  {
+    "id": "10041",
+    "name": "Fisher Thinner Scissors",
+    "sku": "10041",
+    "category": "Uncategorized",
+    "barcode": "",
+    "packSize": 12,
+    "variations": []
+  },
+  {
+    "id": "1057",
+    "name": "Gamma Boosted UP Clipper",
+    "sku": "1057",
+    "category": "MACHINES",
+    "barcode": "",
+    "packSize": 12,
+    "variations": []
+  },
+  {
+    "id": "1056",
+    "name": "Gamma Clipper/Trimmer Single Blade",
+    "sku": "1056",
+    "category": "SPARE PARTS",
+    "barcode": "",
+    "packSize": 12,
+    "variations": []
+  },
+  {
+    "id": "10033",
+    "name": "Gamma Echo MIM Blade",
+    "sku": "10033",
+    "category": "Uncategorized",
+    "barcode": "",
+    "packSize": 12,
+    "variations": []
+  },
+  {
+    "id": "10030",
+    "name": "Gamma Hairdryer",
+    "sku": "10030",
+    "category": "Uncategorized",
+    "barcode": "",
+    "packSize": 12,
+    "variations": []
+  },
+  {
+    "id": "1058",
+    "name": "GAMMA+ BOOSTED TRIMMER",
+    "sku": "1058",
+    "category": "MACHINES",
+    "barcode": "",
+    "packSize": 12,
+    "variations": []
+  },
+  {
+    "id": "1059",
+    "name": "Gummy Beard Oil 100ml",
+    "sku": "1059",
+    "category": "BEARD PRODUCTS",
+    "barcode": "",
+    "packSize": 12,
+    "variations": []
+  },
+  {
+    "id": "1060",
+    "name": "Gummy Beard Oil 50ml",
+    "sku": "1060",
+    "category": "BEARD PRODUCTS",
+    "barcode": "",
+    "packSize": 12,
+    "variations": []
+  },
+  {
+    "id": "1061",
+    "name": "Gummy Hair Mousse",
+    "sku": "1061",
+    "category": "HAIR PRODUCTS",
+    "barcode": "",
+    "packSize": 12,
+    "variations": []
+  },
+  {
+    "id": "1062",
+    "name": "Gummy Seasalt 250ml",
+    "sku": "1062",
+    "category": "HAIR PRODUCTS",
+    "barcode": "",
+    "packSize": 12,
+    "variations": []
+  },
+  {
+    "id": "1063",
+    "name": "Gummy Shiner Cream",
+    "sku": "1063",
+    "category": "HAIR PRODUCTS",
+    "barcode": "",
+    "packSize": 12,
+    "variations": []
+  },
+  {
+    "id": "1067",
+    "name": "Gummy Styling  MATTE WAX",
+    "sku": "1067",
+    "category": "HAIR PRODUCTS",
+    "barcode": "",
+    "packSize": 12,
+    "variations": []
+  },
+  {
+    "id": "1069",
+    "name": "Gummy Styling AQUA WAX",
+    "sku": "1069",
+    "category": "HAIR PRODUCTS",
+    "barcode": "",
+    "packSize": 12,
+    "variations": []
+  },
+  {
+    "id": "1064",
+    "name": "Gummy Styling Gel 220ml",
+    "sku": "1064",
+    "category": "HAIR PRODUCTS",
+    "barcode": "",
+    "packSize": 12,
+    "variations": []
+  },
+  {
+    "id": "1065",
+    "name": "Gummy Styling Gel 700ml",
+    "sku": "1065",
+    "category": "HAIR PRODUCTS",
+    "barcode": "",
+    "packSize": 12,
+    "variations": []
+  },
+  {
+    "id": "1068",
+    "name": "Gummy Styling KERATIN WAX 140ml",
+    "sku": "1068",
+    "category": "HAIR PRODUCTS",
+    "barcode": "",
+    "packSize": 12,
+    "variations": []
+  },
+  {
+    "id": "1066",
+    "name": "Gummy Styling Powder 20gr",
+    "sku": "1066",
+    "category": "HAIR PRODUCTS",
+    "barcode": "",
+    "packSize": 12,
+    "variations": []
+  },
+  {
+    "id": "1070",
+    "name": "Gummy Styling SPRAY",
+    "sku": "1070",
+    "category": "HAIR PRODUCTS",
+    "barcode": "",
+    "packSize": 12,
+    "variations": []
+  },
+  {
+    "id": "1071",
+    "name": "Hair Clips",
+    "sku": "1071",
+    "category": "ACCESSORIES",
+    "barcode": "",
+    "packSize": 12,
+    "variations": []
+  },
+  {
+    "id": "1072",
+    "name": "Hair Colouring  Set (BRUSHES, BOWL,COMBS)",
+    "sku": "1072",
+    "category": "ACCESSORIES",
+    "barcode": "",
+    "packSize": 12,
+    "variations": []
+  },
+  {
+    "id": "1074",
+    "name": "Hair Razor",
+    "sku": "1074",
+    "category": "ACCESSORIES",
+    "barcode": "",
+    "packSize": 12,
+    "variations": []
+  },
+  {
+    "id": "1075",
+    "name": "Hair Sponge",
+    "sku": "1075",
+    "category": "ACCESSORIES",
+    "barcode": "",
+    "packSize": 12,
+    "variations": []
+  },
+  {
+    "id": "1077",
+    "name": "Hairdryer 3800",
+    "sku": "1077",
+    "category": "MACHINES",
+    "barcode": "",
+    "packSize": 12,
+    "variations": []
+  },
+  {
+    "id": "1079",
+    "name": "Kiepe Boxed Scissors",
+    "sku": "1079",
+    "category": "SCISSORS",
+    "barcode": "",
+    "packSize": 12,
+    "variations": []
+  },
+  {
+    "id": "10029",
+    "name": "Kiepe Metal handle Scissors",
+    "sku": "10029",
+    "category": "Uncategorized",
+    "barcode": "",
+    "packSize": 12,
+    "variations": []
+  },
+  {
+    "id": "1080",
+    "name": "Kiepe Scissors Plastic Handle",
+    "sku": "1080",
+    "category": "SCISSORS",
+    "barcode": "",
+    "packSize": 12,
+    "variations": []
+  },
+  {
+    "id": "1081",
+    "name": "Kiepe Thinning Scissors",
+    "sku": "1081",
+    "category": "SCISSORS",
+    "barcode": "",
+    "packSize": 12,
+    "variations": []
+  },
+  {
+    "id": "1083",
+    "name": "Lollypop",
+    "sku": "1083",
+    "category": "Uncategorized",
+    "barcode": "",
+    "packSize": 12,
+    "variations": []
+  },
+  {
+    "id": "10023",
+    "name": "M- Steamer machine",
+    "sku": "10023",
+    "category": "Uncategorized",
+    "barcode": "",
+    "packSize": 12,
+    "variations": []
+  },
+  {
+    "id": "10022",
+    "name": "M- Towel",
+    "sku": "10022",
+    "category": "Uncategorized",
+    "barcode": "",
+    "packSize": 12,
+    "variations": []
+  },
+  {
+    "id": "10000",
+    "name": "Magic Aftershave 150ml",
+    "sku": "10000",
+    "category": "SHAVING",
+    "barcode": "",
+    "packSize": 12,
+    "variations": []
+  },
+  {
+    "id": "10001",
+    "name": "Magic Aftershave 400ml",
+    "sku": "10001",
+    "category": "SHAVING",
+    "barcode": "",
+    "packSize": 12,
+    "variations": []
+  },
+  {
+    "id": "10002",
+    "name": "Magic Aftershave Cream Cologne",
+    "sku": "10002",
+    "category": "SHAVING",
+    "barcode": "",
+    "packSize": 12,
+    "variations": []
+  },
+  {
+    "id": "10003",
+    "name": "Magic Beard Oil 50ml",
+    "sku": "10003",
+    "category": "BEARD PRODUCTS",
+    "barcode": "",
+    "packSize": 12,
+    "variations": []
+  },
+  {
+    "id": "10005",
+    "name": "Magic Curl Cream 200ml",
+    "sku": "10005",
+    "category": "HAIR PRODUCTS",
+    "barcode": "",
+    "packSize": 12,
+    "variations": []
+  },
+  {
+    "id": "10039",
+    "name": "Magic Curl Cream 200ml Avocado",
+    "sku": "10039",
+    "category": "Uncategorized",
+    "barcode": "",
+    "packSize": 12,
+    "variations": []
+  },
+  {
+    "id": "10036",
+    "name": "Magic Curl Cream 400ml",
+    "sku": "10036",
+    "category": "Uncategorized",
+    "barcode": "",
+    "packSize": 12,
+    "variations": []
+  },
+  {
+    "id": "10040",
+    "name": "Magic Curl Cream 400ml Avocado",
+    "sku": "10040",
+    "category": "Uncategorized",
+    "barcode": "",
+    "packSize": 12,
+    "variations": []
+  },
+  {
+    "id": "10037",
+    "name": "Magic Curl Cream Avocado Jar 250ml",
+    "sku": "10037",
+    "category": "Uncategorized",
+    "barcode": "",
+    "packSize": 12,
+    "variations": []
+  },
+  {
+    "id": "10004",
+    "name": "Magic Hair Conditioner",
+    "sku": "10004",
+    "category": "HAIR PRODUCTS",
+    "barcode": "",
+    "packSize": 12,
+    "variations": []
+  },
+  {
+    "id": "10011",
+    "name": "Magic Hair Styling Spray",
+    "sku": "10011",
+    "category": "HAIR PRODUCTS",
+    "barcode": "",
+    "packSize": 12,
+    "variations": []
+  },
+  {
+    "id": "10006",
+    "name": "Magic Hair Styling Wax",
+    "sku": "10006",
+    "category": "HAIR PRODUCTS",
+    "barcode": "",
+    "packSize": 12,
+    "variations": []
+  },
+  {
+    "id": "10007",
+    "name": "Magic Hand & Face Cream",
+    "sku": "10007",
+    "category": "SKIN CARE",
+    "barcode": "",
+    "packSize": 12,
+    "variations": []
+  },
+  {
+    "id": "10009",
+    "name": "Magic Sea Salt Spray",
+    "sku": "10009",
+    "category": "HAIR PRODUCTS",
+    "barcode": "",
+    "packSize": 12,
+    "variations": []
+  },
+  {
+    "id": "10010",
+    "name": "Magic Shaving Gel 1000ml",
+    "sku": "10010",
+    "category": "SHAVING",
+    "barcode": "",
+    "packSize": 12,
+    "variations": []
+  },
+  {
+    "id": "10028",
+    "name": "Magic Styling Powder (Gum-Berry-Melon)",
+    "sku": "10028",
+    "category": "HAIR PRODUCTS",
+    "barcode": "",
+    "packSize": 12,
+    "variations": []
+  },
+  {
+    "id": "10008",
+    "name": "Magic Styling Powder 20gr",
+    "sku": "10008",
+    "category": "HAIR PRODUCTS",
+    "barcode": "",
+    "packSize": 12,
+    "variations": []
+  },
+  {
+    "id": "1020",
+    "name": "Marmara Barber After Shave 250 ml",
+    "sku": "1020",
+    "category": "SHAVING",
+    "barcode": "",
+    "packSize": 12,
+    "variations": []
+  },
+  {
+    "id": "1087",
+    "name": "Marmara Barber Lemon 150ml",
+    "sku": "1087",
+    "category": "SHAVING",
+    "barcode": "",
+    "packSize": 12,
+    "variations": []
+  },
+  {
+    "id": "1088",
+    "name": "Marmara Barber Parfume",
+    "sku": "1088",
+    "category": "SHAVING",
+    "barcode": "",
+    "packSize": 12,
+    "variations": []
+  },
+  {
+    "id": "1089",
+    "name": "Marmara Graffiti Aftershave 150ml",
+    "sku": "1089",
+    "category": "SHAVING",
+    "barcode": "",
+    "packSize": 12,
+    "variations": []
+  },
+  {
+    "id": "1090",
+    "name": "Marmara Powder 20gr Boxed",
+    "sku": "1090",
+    "category": "HAIR PRODUCTS",
+    "barcode": "",
+    "packSize": 12,
+    "variations": []
+  },
+  {
+    "id": "1095",
+    "name": "Nitril gloves powder free",
+    "sku": "1095",
+    "category": "DISPOSABLES",
+    "barcode": "",
+    "packSize": 12,
+    "variations": []
+  },
+  {
+    "id": "1099",
+    "name": "Permasharp",
+    "sku": "1099",
+    "category": "SHAVING",
+    "barcode": "",
+    "packSize": 12,
+    "variations": []
+  },
+  {
+    "id": "1100",
+    "name": "Pump fiber applicator",
+    "sku": "1100",
+    "category": "ACCESSORIES",
+    "barcode": "",
+    "packSize": 12,
+    "variations": []
+  },
+  {
+    "id": "1101",
+    "name": "Razor Cut Throat (Metal Sliding Tray)",
+    "sku": "1101",
+    "category": "SHAVING",
+    "barcode": "",
+    "packSize": 12,
+    "variations": []
+  },
+  {
+    "id": "10016",
+    "name": "Rebo Trimmer",
+    "sku": "10016",
+    "category": "Uncategorized",
+    "barcode": "",
+    "packSize": 12,
+    "variations": []
+  },
+  {
+    "id": "1102",
+    "name": "SC Rebel Trimmer",
+    "sku": "1102",
+    "category": "MACHINES",
+    "barcode": "",
+    "packSize": 12,
+    "variations": []
+  },
+  {
+    "id": "1103",
+    "name": "SC Saber 2 Clipper",
+    "sku": "1103",
+    "category": "MACHINES",
+    "barcode": "",
+    "packSize": 12,
+    "variations": []
+  },
+  {
+    "id": "1104",
+    "name": "SC Saber Trimmer Black",
+    "sku": "1104",
+    "category": "MACHINES",
+    "barcode": "",
+    "packSize": 12,
+    "variations": []
+  },
+  {
+    "id": "1114",
+    "name": "Shougun Scissors 6.5inch",
+    "sku": "1114",
+    "category": "SCISSORS",
+    "barcode": "",
+    "packSize": 12,
+    "variations": []
+  },
+  {
+    "id": "1115",
+    "name": "Shougun Thinning Scissor",
+    "sku": "1115",
+    "category": "SCISSORS",
+    "barcode": "",
+    "packSize": 12,
+    "variations": []
+  },
+  {
+    "id": "1105",
+    "name": "Sougun Scissor 7inch",
+    "sku": "1105",
+    "category": "SCISSORS",
+    "barcode": "",
+    "packSize": 12,
+    "variations": []
+  },
+  {
+    "id": "1120",
+    "name": "Style Craft Echo Blades",
+    "sku": "1120",
+    "category": "SPARE PARTS",
+    "barcode": "",
+    "packSize": 12,
+    "variations": []
+  },
+  {
+    "id": "1121",
+    "name": "Style Craft Replacement Blades Set 2pcs",
+    "sku": "1121",
+    "category": "SPARE PARTS",
+    "barcode": "",
+    "packSize": 12,
+    "variations": []
+  },
+  {
+    "id": "10017",
+    "name": "Suavacito Wax",
+    "sku": "10017",
+    "category": "Uncategorized",
+    "barcode": "",
+    "packSize": 12,
+    "variations": []
+  },
+  {
+    "id": "1097",
+    "name": "Tool Organiser",
+    "sku": "1097",
+    "category": "ACCESSORIES",
+    "barcode": "",
+    "packSize": 12,
+    "variations": []
+  },
+  {
+    "id": "1127",
+    "name": "Towel Case (12 pack)",
+    "sku": "1127",
+    "category": "ACCESSORIES",
+    "barcode": "",
+    "packSize": 12,
+    "variations": []
+  },
+  {
+    "id": "1086",
+    "name": "TSF 3-Magnetic Matte",
+    "sku": "1086",
+    "category": "ACCESSORIES",
+    "barcode": "",
+    "packSize": 12,
+    "variations": []
+  },
+  {
+    "id": "1129",
+    "name": "TSF 6-Magnetic Matte",
+    "sku": "1129",
+    "category": "ACCESSORIES",
+    "barcode": "",
+    "packSize": 12,
+    "variations": []
+  },
+  {
+    "id": "1001",
+    "name": "TSF AFTER SHAVE 5lt (#9-10-11-12)",
+    "sku": "1001",
+    "category": "SHAVING",
+    "barcode": "",
+    "packSize": 12,
+    "variations": []
+  },
+  {
+    "id": "1002",
+    "name": "TSF AFTERSHAVE  400ML",
+    "sku": "1002",
+    "category": "SHAVING",
+    "barcode": "",
+    "packSize": 12,
+    "variations": []
+  },
+  {
+    "id": "1003",
+    "name": "TSF AFTERSHAVE 250ML",
+    "sku": "1003",
+    "category": "SHAVING",
+    "barcode": "",
+    "packSize": 12,
+    "variations": []
+  },
+  {
+    "id": "1004",
+    "name": "TSF Aftershave OUD Series 250ml",
+    "sku": "1004",
+    "category": "SHAVING",
+    "barcode": "",
+    "packSize": 12,
+    "variations": []
+  },
+  {
+    "id": "1029",
+    "name": "TSF Beard Oil Sandalwood 30ml",
+    "sku": "1029",
+    "category": "BEARD PRODUCTS",
+    "barcode": "",
+    "packSize": 12,
+    "variations": []
+  },
+  {
+    "id": "1027",
+    "name": "TSF BEARD Oil Sandalwood 75ml",
+    "sku": "1027",
+    "category": "BEARD PRODUCTS",
+    "barcode": "",
+    "packSize": 12,
+    "variations": []
+  },
+  {
+    "id": "1028",
+    "name": "TSF Beard Perfume 75ml",
+    "sku": "1028",
+    "category": "BEARD PRODUCTS",
+    "barcode": "",
+    "packSize": 12,
+    "variations": []
+  },
+  {
+    "id": "1130",
+    "name": "TSF Black Peel-off Mask",
+    "sku": "1130",
+    "category": "SKIN CARE",
+    "barcode": "",
+    "packSize": 12,
+    "variations": []
+  },
+  {
+    "id": "1131",
+    "name": "TSF BLADE DISPENSER",
+    "sku": "1131",
+    "category": "DISPOSABLES",
+    "barcode": "",
+    "packSize": 12,
+    "variations": []
+  },
+  {
+    "id": "1037",
+    "name": "TSF Clipper Guard (0,5-boxed)",
+    "sku": "1037",
+    "category": "SPARE PARTS",
+    "barcode": "",
+    "packSize": 12,
+    "variations": []
+  },
+  {
+    "id": "1038",
+    "name": "TSF Clipper Guard 3pcs (boxed)",
+    "sku": "1038",
+    "category": "SPARE PARTS",
+    "barcode": "",
+    "packSize": 12,
+    "variations": []
+  },
+  {
+    "id": "1041",
+    "name": "TSF Clipper Guards Colourful",
+    "sku": "1041",
+    "category": "SPARE PARTS",
+    "barcode": "",
+    "packSize": 12,
+    "variations": []
+  },
+  {
+    "id": "10026",
+    "name": "TSF Clipper Oil Spray",
+    "sku": "10026",
+    "category": "DISENFECTANTS",
+    "barcode": "",
+    "packSize": 12,
+    "variations": []
+  },
+  {
+    "id": "1133",
+    "name": "TSF Clippercare 5 in 1 Spray",
+    "sku": "1133",
+    "category": "DISENFECTANTS",
+    "barcode": "",
+    "packSize": 12,
+    "variations": []
+  },
+  {
+    "id": "1045",
+    "name": "TSF Conditioner Hair Spray 500ml",
+    "sku": "1045",
+    "category": "HAIR PRODUCTS",
+    "barcode": "",
+    "packSize": 12,
+    "variations": []
+  },
+  {
+    "id": "1135",
+    "name": "TSF Cream Cologne 500ML",
+    "sku": "1135",
+    "category": "SHAVING",
+    "barcode": "",
+    "packSize": 12,
+    "variations": []
+  },
+  {
+    "id": "1047",
+    "name": "TSF Curl Cream 200ml",
+    "sku": "1047",
+    "category": "HAIR PRODUCTS",
+    "barcode": "",
+    "packSize": 12,
+    "variations": []
+  },
+  {
+    "id": "1048",
+    "name": "TSF Curl Cream 400ml",
+    "sku": "1048",
+    "category": "HAIR PRODUCTS",
+    "barcode": "",
+    "packSize": 12,
+    "variations": []
+  },
+  {
+    "id": "1049",
+    "name": "TSF Disinfection Jar Medium",
+    "sku": "1049",
+    "category": "DISENFECTANTS",
+    "barcode": "",
+    "packSize": 12,
+    "variations": []
+  },
+  {
+    "id": "1050",
+    "name": "TSF Disposable Towel",
+    "sku": "1050",
+    "category": "DISPOSABLES",
+    "barcode": "",
+    "packSize": 12,
+    "variations": []
+  },
+  {
+    "id": "1053",
+    "name": "TSF Face Scrub Mint 300ml",
+    "sku": "1053",
+    "category": "SKIN CARE",
+    "barcode": "",
+    "packSize": 12,
+    "variations": []
+  },
+  {
+    "id": "1054",
+    "name": "TSF Fade Brush Large | Wooden",
+    "sku": "1054",
+    "category": "COMB/BRUSHES",
+    "barcode": "",
+    "packSize": 12,
+    "variations": []
+  },
+  {
+    "id": "1055",
+    "name": "TSF Fade Brush Small | Wooden",
+    "sku": "1055",
+    "category": "COMB/BRUSHES",
+    "barcode": "",
+    "packSize": 12,
+    "variations": []
+  },
+  {
+    "id": "1137",
+    "name": "TSF Hair Building Fiber Black 21gr",
+    "sku": "1137",
+    "category": "HAIR PRODUCTS",
+    "barcode": "",
+    "packSize": 12,
+    "variations": []
+  },
+  {
+    "id": "1138",
+    "name": "TSF Hair Building Fiber Dark Brown 21gr",
+    "sku": "1138",
+    "category": "HAIR PRODUCTS",
+    "barcode": "",
+    "packSize": 12,
+    "variations": []
+  },
+  {
+    "id": "1139",
+    "name": "TSF Hair Building Fiber Light Brown 21gr",
+    "sku": "1139",
+    "category": "HAIR PRODUCTS",
+    "barcode": "",
+    "packSize": 12,
+    "variations": []
+  },
+  {
+    "id": "1140",
+    "name": "TSF Hair Building Fiber Medium Brown 21gr",
+    "sku": "1140",
+    "category": "HAIR PRODUCTS",
+    "barcode": "",
+    "packSize": 12,
+    "variations": []
+  },
+  {
+    "id": "1073",
+    "name": "TSF Hair Fiber Black 22gr",
+    "sku": "1073",
+    "category": "HAIR PRODUCTS",
+    "barcode": "",
+    "packSize": 12,
+    "variations": []
+  },
+  {
+    "id": "1141",
+    "name": "TSF Hair Mousse",
+    "sku": "1141",
+    "category": "HAIR PRODUCTS",
+    "barcode": "",
+    "packSize": 12,
+    "variations": []
+  },
+  {
+    "id": "1142",
+    "name": "TSF Hair Removal Wax (GREEN&BLACK)",
+    "sku": "1142",
+    "category": "SKIN CARE",
+    "barcode": "",
+    "packSize": 12,
+    "variations": []
+  },
+  {
+    "id": "1143",
+    "name": "TSF Hair Shampoo 5lt",
+    "sku": "1143",
+    "category": "HAIR PRODUCTS",
+    "barcode": "",
+    "packSize": 12,
+    "variations": []
+  },
+  {
+    "id": "1145",
+    "name": "TSF Hair Tonic  500ML",
+    "sku": "1145",
+    "category": "HAIR PRODUCTS",
+    "barcode": "",
+    "packSize": 12,
+    "variations": []
+  },
+  {
+    "id": "1076",
+    "name": "TSF Hair Tonic 250ml",
+    "sku": "1076",
+    "category": "HAIR PRODUCTS",
+    "barcode": "",
+    "packSize": 12,
+    "variations": []
+  },
+  {
+    "id": "1078",
+    "name": "TSF Hand & Face Cream 300ML",
+    "sku": "1078",
+    "category": "SKIN CARE",
+    "barcode": "",
+    "packSize": 12,
+    "variations": []
+  },
+  {
+    "id": "1146",
+    "name": "TSF INK COLOR",
+    "sku": "1146",
+    "category": "ACCESSORIES",
+    "barcode": "",
+    "packSize": 12,
+    "variations": []
+  },
+  {
+    "id": "1082",
+    "name": "TSF Lemon Cologne 5lt",
+    "sku": "1082",
+    "category": "SHAVING",
+    "barcode": "",
+    "packSize": 12,
+    "variations": []
+  },
+  {
+    "id": "1084",
+    "name": "TSF Magic Comb",
+    "sku": "1084",
+    "category": "COMB/BRUSHES",
+    "barcode": "",
+    "packSize": 12,
+    "variations": []
+  },
+  {
+    "id": "1147",
+    "name": "TSF Magic Retouch Spray Black 100ml",
+    "sku": "1147",
+    "category": "HAIR PRODUCTS",
+    "barcode": "",
+    "packSize": 12,
+    "variations": []
+  },
+  {
+    "id": "1148",
+    "name": "TSF Magic Retouch Spray Dark Brown 100ml",
+    "sku": "1148",
+    "category": "HAIR PRODUCTS",
+    "barcode": "",
+    "packSize": 12,
+    "variations": []
+  },
+  {
+    "id": "1149",
+    "name": "TSF Magic Retouch Spray Light Brown 100ml",
+    "sku": "1149",
+    "category": "HAIR PRODUCTS",
+    "barcode": "",
+    "packSize": 12,
+    "variations": []
+  },
+  {
+    "id": "1150",
+    "name": "TSF Magic Retouch Spray Medium Brown 100ml",
+    "sku": "1150",
+    "category": "HAIR PRODUCTS",
+    "barcode": "",
+    "packSize": 12,
+    "variations": []
+  },
+  {
+    "id": "1136",
+    "name": "TSF Metal Razor",
+    "sku": "1136",
+    "category": "SHAVING",
+    "barcode": "",
+    "packSize": 12,
+    "variations": []
+  },
+  {
+    "id": "1091",
+    "name": "TSF Mirror",
+    "sku": "1091",
+    "category": "ACCESSORIES",
+    "barcode": "",
+    "packSize": 12,
+    "variations": []
+  },
+  {
+    "id": "1151",
+    "name": "TSF Neck Brush 984S",
+    "sku": "1151",
+    "category": "COMB/BRUSHES",
+    "barcode": "",
+    "packSize": 12,
+    "variations": []
+  },
+  {
+    "id": "1093",
+    "name": "TSF Neck Paper Black",
+    "sku": "1093",
+    "category": "DISPOSABLES",
+    "barcode": "",
+    "packSize": 12,
+    "variations": []
+  },
+  {
+    "id": "1092",
+    "name": "TSF Neck Paper Holder",
+    "sku": "1092",
+    "category": "ACCESSORIES",
+    "barcode": "",
+    "packSize": 12,
+    "variations": []
+  },
+  {
+    "id": "1094",
+    "name": "TSF Neck Paper White",
+    "sku": "1094",
+    "category": "DISPOSABLES",
+    "barcode": "",
+    "packSize": 12,
+    "variations": []
+  },
+  {
+    "id": "1096",
+    "name": "TSF Olive Oil & Coconut Spray",
+    "sku": "1096",
+    "category": "HAIR PRODUCTS",
+    "barcode": "",
+    "packSize": 12,
+    "variations": []
+  },
+  {
+    "id": "1098",
+    "name": "TSF Oud Aftershave Gift Set",
+    "sku": "1098",
+    "category": "SHAVING",
+    "barcode": "",
+    "packSize": 12,
+    "variations": []
+  },
+  {
+    "id": "1128",
+    "name": "TSF Round Hair Brush - Wooden",
+    "sku": "1128",
+    "category": "COMB/BRUSHES",
+    "barcode": "",
+    "packSize": 12,
+    "variations": []
+  },
+  {
+    "id": "1153",
+    "name": "TSF Scissors",
+    "sku": "1153",
+    "category": "SCISSORS",
+    "barcode": "",
+    "packSize": 12,
+    "variations": []
+  },
+  {
+    "id": "1154",
+    "name": "TSF SEA SALT 250ml",
+    "sku": "1154",
+    "category": "HAIR PRODUCTS",
+    "barcode": "",
+    "packSize": 12,
+    "variations": []
+  },
+  {
+    "id": "1107",
+    "name": "TSF Sea Salt 400ml",
+    "sku": "1107",
+    "category": "HAIR PRODUCTS",
+    "barcode": "",
+    "packSize": 12,
+    "variations": []
+  },
+  {
+    "id": "1108",
+    "name": "TSF Seat Booster",
+    "sku": "1108",
+    "category": "ACCESSORIES",
+    "barcode": "",
+    "packSize": 12,
+    "variations": []
+  },
+  {
+    "id": "1109",
+    "name": "TSF Shampoo 1000ml",
+    "sku": "1109",
+    "category": "HAIR PRODUCTS",
+    "barcode": "",
+    "packSize": 12,
+    "variations": []
+  },
+  {
+    "id": "1155",
+    "name": "TSF Shaving Gel 1000ml",
+    "sku": "1155",
+    "category": "SHAVING",
+    "barcode": "",
+    "packSize": 12,
+    "variations": [
+      {
+        "name": "Sapphire",
+        "total": 0
+      },
+      {
+        "name": "Cristal",
+        "total": 0
+      },
+      {
+        "name": "Golden",
+        "total": 0
+      }
+    ]
+  },
+  {
+    "id": "1156",
+    "name": "TSF Shaving Gel 1250ml",
+    "sku": "1156",
+    "category": "SHAVING",
+    "barcode": "",
+    "packSize": 12,
+    "variations": [
+      {
+        "name": "Sapphire",
+        "total": 0
+      },
+      {
+        "name": "Cristal",
+        "total": 0
+      },
+      {
+        "name": "Golden",
+        "total": 0
+      }
+    ]
+  },
+  {
+    "id": "1157",
+    "name": "TSF Shaving Gel 1500ml",
+    "sku": "1157",
+    "category": "SHAVING",
+    "barcode": "",
+    "packSize": 12,
+    "variations": [
+      {
+        "name": "Sapphire",
+        "total": 0
+      },
+      {
+        "name": "Cristal",
+        "total": 0
+      },
+      {
+        "name": "Golden",
+        "total": 0
+      }
+    ]
+  },
+  {
+    "id": "1110",
+    "name": "TSF Shaving mug metal",
+    "sku": "1110",
+    "category": "SHAVING",
+    "barcode": "",
+    "packSize": 12,
+    "variations": []
+  },
+  {
+    "id": "1111",
+    "name": "TSF Shaving Mug porcelain",
+    "sku": "1111",
+    "category": "SHAVING",
+    "barcode": "",
+    "packSize": 12,
+    "variations": []
+  },
+  {
+    "id": "1112",
+    "name": "TSF Shaving Soap Brush M",
+    "sku": "1112",
+    "category": "SHAVING",
+    "barcode": "",
+    "packSize": 12,
+    "variations": []
+  },
+  {
+    "id": "1113",
+    "name": "TSF Shaving Soap Brush S",
+    "sku": "1113",
+    "category": "SHAVING",
+    "barcode": "",
+    "packSize": 12,
+    "variations": []
+  },
+  {
+    "id": "1116",
+    "name": "TSF Small Plastic Fade Brush",
+    "sku": "1116",
+    "category": "COMB/BRUSHES",
+    "barcode": "",
+    "packSize": 12,
+    "variations": []
+  },
+  {
+    "id": "1117",
+    "name": "TSF Spray Bottle W/B",
+    "sku": "1117",
+    "category": "ACCESSORIES",
+    "barcode": "",
+    "packSize": 12,
+    "variations": []
+  },
+  {
+    "id": "1118",
+    "name": "TSF Spray Master",
+    "sku": "1118",
+    "category": "MACHINES",
+    "barcode": "",
+    "packSize": 12,
+    "variations": []
+  },
+  {
+    "id": "1123",
+    "name": "TSF Styling   MATTE WAX-99",
+    "sku": "1123",
+    "category": "HAIR PRODUCTS",
+    "barcode": "",
+    "packSize": 12,
+    "variations": []
+  },
+  {
+    "id": "1122",
+    "name": "TSF Styling  AQUA WAX",
+    "sku": "1122",
+    "category": "HAIR PRODUCTS",
+    "barcode": "",
+    "packSize": 12,
+    "variations": []
+  },
+  {
+    "id": "1125",
+    "name": "TSF Styling  MATTE WAX-44",
+    "sku": "1125",
+    "category": "HAIR PRODUCTS",
+    "barcode": "",
+    "packSize": 12,
+    "variations": []
+  },
+  {
+    "id": "1124",
+    "name": "TSF Styling  SPIDER WAX-22",
+    "sku": "1124",
+    "category": "HAIR PRODUCTS",
+    "barcode": "",
+    "packSize": 12,
+    "variations": []
+  },
+  {
+    "id": "1152",
+    "name": "TSF Styling Powder 20gr w/box",
+    "sku": "1152",
+    "category": "HAIR PRODUCTS",
+    "barcode": "",
+    "packSize": 12,
+    "variations": []
+  },
+  {
+    "id": "1134",
+    "name": "TSF Styling Powder 20GR w/stand",
+    "sku": "1134",
+    "category": "HAIR PRODUCTS",
+    "barcode": "",
+    "packSize": 12,
+    "variations": []
+  },
+  {
+    "id": "1144",
+    "name": "TSF Styling Powder 30gr",
+    "sku": "1144",
+    "category": "HAIR PRODUCTS",
+    "barcode": "",
+    "packSize": 12,
+    "variations": []
+  },
+  {
+    "id": "1158",
+    "name": "TSF Styling Spray 400ml",
+    "sku": "1158",
+    "category": "HAIR PRODUCTS",
+    "barcode": "",
+    "packSize": 12,
+    "variations": []
+  },
+  {
+    "id": "1159",
+    "name": "TSF Styling Spray 750ml",
+    "sku": "1159",
+    "category": "HAIR PRODUCTS",
+    "barcode": "",
+    "packSize": 12,
+    "variations": []
+  },
+  {
+    "id": "1160",
+    "name": "TSF SYPTCH MATCHES",
+    "sku": "1160",
+    "category": "SKIN CARE",
+    "barcode": "",
+    "packSize": 12,
+    "variations": []
+  },
+  {
+    "id": "1126",
+    "name": "TSF Temporary hair colour spray 150 ML",
+    "sku": "1126",
+    "category": "HAIR PRODUCTS",
+    "barcode": "",
+    "packSize": 12,
+    "variations": []
+  },
+  {
+    "id": "1161",
+    "name": "TSF Wax Heater",
+    "sku": "1161",
+    "category": "MACHINES",
+    "barcode": "",
+    "packSize": 12,
+    "variations": []
+  },
+  {
+    "id": "10012",
+    "name": "Wahl Beret blade",
+    "sku": "10012",
+    "category": "Uncategorized",
+    "barcode": "",
+    "packSize": 12,
+    "variations": []
+  },
+  {
+    "id": "10021",
+    "name": "Wahl Beret Trimmer",
+    "sku": "10021",
+    "category": "MACHINES",
+    "barcode": "",
+    "packSize": 12,
+    "variations": []
+  },
+  {
+    "id": "1166",
+    "name": "Wahl Black Detailer",
+    "sku": "1166",
+    "category": "MACHINES",
+    "barcode": "",
+    "packSize": 12,
+    "variations": []
+  },
+  {
+    "id": "1167",
+    "name": "Wahl Black Detailer (20% Discounted)",
+    "sku": "1167",
+    "category": "MACHINES",
+    "barcode": "",
+    "packSize": 12,
+    "variations": []
+  },
+  {
+    "id": "10024",
+    "name": "Wahl Clipper Bag",
+    "sku": "10024",
+    "category": "Uncategorized",
+    "barcode": "",
+    "packSize": 12,
+    "variations": []
+  },
+  {
+    "id": "1042",
+    "name": "Wahl Clipper oil",
+    "sku": "1042",
+    "category": "DISENFECTANTS",
+    "barcode": "",
+    "packSize": 12,
+    "variations": []
+  },
+  {
+    "id": "1164",
+    "name": "Wahl Detailer Blade",
+    "sku": "1164",
+    "category": "SPARE PARTS",
+    "barcode": "",
+    "packSize": 12,
+    "variations": []
+  },
+  {
+    "id": "1163",
+    "name": "Wahl Detailer Red",
+    "sku": "1163",
+    "category": "MACHINES",
+    "barcode": "",
+    "packSize": 12,
+    "variations": []
+  },
+  {
+    "id": "1165",
+    "name": "Wahl Gold Detailer",
+    "sku": "1165",
+    "category": "MACHINES",
+    "barcode": "",
+    "packSize": 12,
+    "variations": []
+  },
+  {
+    "id": "1168",
+    "name": "Wahl Hi-Viz",
+    "sku": "1168",
+    "category": "MACHINES",
+    "barcode": "",
+    "packSize": 12,
+    "variations": []
+  },
+  {
+    "id": "1169",
+    "name": "Wahl Hi-Viz Replacement Blade",
+    "sku": "1169",
+    "category": "SPARE PARTS",
+    "barcode": "",
+    "packSize": 12,
+    "variations": []
+  },
+  {
+    "id": "1170",
+    "name": "Wahl Magic Clip Black",
+    "sku": "1170",
+    "category": "MACHINES",
+    "barcode": "",
+    "packSize": 12,
+    "variations": []
+  },
+  {
+    "id": "1175",
+    "name": "Wahl Magic Clip Gold",
+    "sku": "1175",
+    "category": "MACHINES",
+    "barcode": "",
+    "packSize": 12,
+    "variations": []
+  },
+  {
+    "id": "1174",
+    "name": "Wahl Magic Clip Gold (Discounted 25%)",
+    "sku": "1174",
+    "category": "MACHINES",
+    "barcode": "",
+    "packSize": 12,
+    "variations": []
+  },
+  {
+    "id": "1173",
+    "name": "Wahl Magic Clip Red",
+    "sku": "1173",
+    "category": "MACHINES",
+    "barcode": "",
+    "packSize": 12,
+    "variations": []
+  },
+  {
+    "id": "1085",
+    "name": "Wahl Magic Gold Replacement Blade",
+    "sku": "1085",
+    "category": "SPARE PARTS",
+    "barcode": "",
+    "packSize": 12,
+    "variations": []
+  },
+  {
+    "id": "1177",
+    "name": "Wahl Senior 2.0",
+    "sku": "1177",
+    "category": "MACHINES",
+    "barcode": "",
+    "packSize": 12,
+    "variations": []
+  },
+  {
+    "id": "1178",
+    "name": "Wahl Single Power Station (Discounted)",
+    "sku": "1178",
+    "category": "MACHINES",
+    "barcode": "",
+    "packSize": 12,
+    "variations": []
+  },
+  {
+    "id": "1179",
+    "name": "Wahl Standard Clipper Blade",
+    "sku": "1179",
+    "category": "SPARE PARTS",
+    "barcode": "",
+    "packSize": 12,
+    "variations": []
+  },
+  {
+    "id": "10025",
+    "name": "Wahl Super Taper Corded Clipper",
+    "sku": "10025",
+    "category": "Uncategorized",
+    "barcode": "",
+    "packSize": 12,
+    "variations": []
+  },
+  {
+    "id": "1162",
+    "name": "Wahl Vanish foil and cutter",
+    "sku": "1162",
+    "category": "SPARE PARTS",
+    "barcode": "",
+    "packSize": 12,
+    "variations": []
+  },
+  {
+    "id": "1181",
+    "name": "Wahl Vanish Shaver",
+    "sku": "1181",
+    "category": "MACHINES",
+    "barcode": "",
+    "packSize": 12,
+    "variations": []
+  },
+  {
+    "id": "1187",
+    "name": "Wahl Vanquish Compact Hairdryer (Discount 20%)",
+    "sku": "1187",
+    "category": "MACHINES",
+    "barcode": "",
+    "packSize": 12,
+    "variations": []
+  },
+  {
+    "id": "1186",
+    "name": "Wahl Vanquish Hairdryer (Discounted 33%)",
+    "sku": "1186",
+    "category": "MACHINES",
+    "barcode": "",
+    "packSize": 12,
+    "variations": []
+  },
+  {
+    "id": "1182",
+    "name": "Wahl Vapor (Discounted 25%)",
+    "sku": "1182",
+    "category": "MACHINES",
+    "barcode": "",
+    "packSize": 12,
+    "variations": []
+  },
+  {
+    "id": "1184",
+    "name": "Wahl Vapor Blade",
+    "sku": "1184",
+    "category": "SPARE PARTS",
+    "barcode": "",
+    "packSize": 12,
+    "variations": []
+  },
+  {
+    "id": "1183",
+    "name": "Wahl Vapor Clipper",
+    "sku": "1183",
+    "category": "MACHINES",
+    "barcode": "",
+    "packSize": 12,
+    "variations": []
+  },
+  {
+    "id": "1185",
+    "name": "Wahl Vapor Clipper Limited Edition",
+    "sku": "1185",
+    "category": "MACHINES",
+    "barcode": "",
+    "packSize": 12,
+    "variations": []
+  },
+  {
+    "id": "10027",
+    "name": "Water Spray Bottle Small",
+    "sku": "10027",
+    "category": "Uncategorized",
+    "barcode": "",
+    "packSize": 12,
+    "variations": []
+  },
+  {
+    "id": "1188",
+    "name": "Wax applicator wooden",
+    "sku": "1188",
+    "category": "ACCESSORIES",
+    "barcode": "",
+    "packSize": 12,
+    "variations": []
+  },
+  {
+    "id": "1189",
+    "name": "White Pencil",
+    "sku": "1189",
+    "category": "ACCESSORIES",
+    "barcode": "",
+    "packSize": 12,
+    "variations": []
+  },
+  {
+    "id": "10031",
+    "name": "Wilkinson Double Edge Blade",
+    "sku": "10031",
+    "category": "Uncategorized",
+    "barcode": "",
+    "packSize": 12,
+    "variations": []
+  }
+];
         let order = JSON.parse(localStorage.getItem('pso_active_order')) || {};
         let barcodeMap = JSON.parse(localStorage.getItem('pso_barcode_map')) || {};
         let customVariations = JSON.parse(localStorage.getItem('pso_custom_variations')) || {};
@@ -296,9 +2360,7 @@
                 searchQuery = e.target.value;
                 renderProducts();
             });
-            if (products.length > 0) {
-                initCatalogUI();
-            }
+            initCatalogUI();
         };
 
         function triggerCSVImport() {
@@ -306,7 +2368,7 @@
         }
 
         function handleCSVFileSelect(event) {
-            const file = event.target.files;
+            const file = event.target.files[0]; // FIXED: Added [0] to read the correct file object!
             if (!file) return;
             const reader = new FileReader();
             reader.onload = function(e) {
@@ -338,7 +2400,7 @@
                 return cells;
             };
 
-            const headers = getCells(lines);
+            const headers = getCells(lines[0]);
             const nameIdx = headers.indexOf('Name');
             const skuIdx = headers.indexOf('SKU');
             const catIdx = headers.indexOf('Category');
@@ -354,13 +2416,12 @@
                 const name = cells[nameIdx];
                 if (!name || name === "Name") continue;
 
-                const sku = skuIdx !== -1 ? cells[skuIdx] : "";
+                const sku = skuIdx !== -1 && cells[skuIdx] ? cells[skuIdx] : "";
                 const category = catIdx !== -1 && cells[catIdx] ? cells[catIdx] : "Uncategorized";
                 const barcode = barIdx !== -1 ? cells[barIdx] : "";
                 const id = sku || (handIdx !== -1 ? cells[handIdx] : "id-" + i);
 
                 let variations = [];
-                // Add default Sapphire, Cristal, Golden sub-variations for TSF Shaving Gels
                 if (name.toLowerCase().includes('tsf shaving gel')) {
                     variations = [
                         { name: "Sapphire", total: 0 },
@@ -485,7 +2546,7 @@
                                 <div class="flex items-center space-x-2">
                                     <input type="number" id="v-box-${p.id}-${vidx}" value="${vBoxes}" onchange="onVarChange('${p.id}', ${vidx})" class="w-10 bg-slate-900 border border-slate-800 text-center rounded text-xs py-0.5">
                                     <span class="text-xxs text-slate-500">Box</span>
-                                    <input type="number" id="v-pcs-${p.id}-${vidx}" value="${vPcs}" onchange="onVarChange('${p.id}', ${vidx})" class="w-10 bg-slate-900 border border-slate-800 text-center rounded text-xs py-0.5">
+                                    <input type="number" id="v-pcs-${p.id}-${vidx}" value="${vPcs}" onchange="onVarChange('${p.id}', \${vidx})" class="w-10 bg-slate-900 border border-slate-800 text-center rounded text-xs py-0.5">
                                     <span class="text-xxs text-slate-500">Pcs</span>
                                 </div>
                             </div>`;
@@ -654,6 +2715,83 @@
             }
         }
 
+        function saveState() {
+            localStorage.setItem('pso_active_order', JSON.stringify(order));
+        }
+
+        // Camera Barcode Scanning
+        function toggleScanner() {
+            const container = document.getElementById('scanner-container');
+            if (isScannerActive) {
+                stopScanner();
+                container.classList.add('hidden');
+            } else {
+                container.classList.remove('hidden');
+                startScanner();
+            }
+        }
+
+        function startScanner() {
+            isScannerActive = true;
+            barcodeScanner = new Html5Qrcode("interactive-reader");
+            barcodeScanner.start(
+                { facingMode: "environment" },
+                { fps: 10, qrbox: { width: 250, height: 120 } },
+                (text) => {
+                    stopScanner();
+                    document.getElementById('scanner-container').classList.add('hidden');
+                    processBarcode(text);
+                },
+                () => {}
+            ).catch(err => {
+                alert("Camera access failed: " + err);
+                isScannerActive = false;
+                document.getElementById('scanner-container').classList.add('hidden');
+            });
+        }
+
+        function stopScanner() {
+            isScannerActive = false;
+            if (barcodeScanner) {
+                barcodeScanner.stop().then(() => {
+                    document.getElementById('interactive-reader').innerHTML = "";
+                }).catch(err => {});
+            }
+        }
+
+        function processBarcode(barcode) {
+            let matched = products.find(p => p.barcode === barcode) || products.find(p => barcodeMap[barcode] === p.id);
+            if (matched) {
+                const currentQty = order[matched.id]?.total || 0;
+                updateProductTotal(matched, currentQty + 1);
+                renderProducts();
+                alert(`Added to order: ${matched.name} (+1 Piece)`);
+            } else {
+                document.getElementById('scanned-barcode-value').innerText = barcode;
+                document.getElementById('barcode-assoc-modal').classList.remove('hidden');
+            }
+        }
+
+        function populateBarcodeDropdown() {
+            const select = document.getElementById('barcode-product-select');
+            select.innerHTML = '<option value="">-- Choose Product to Link --</option>';
+            products.forEach(p => {
+                select.innerHTML += `<option value="${p.id}">[SKU: ${p.sku}] ${p.name}</option>`;
+            });
+        }
+
+        function saveBarcodeAssociation() {
+            const barcode = document.getElementById('scanned-barcode-value').innerText;
+            const id = document.getElementById('barcode-product-select').value;
+            if (id) {
+                barcodeMap[barcode] = id;
+                localStorage.setItem('pso_barcode_map', JSON.stringify(barcodeMap));
+                closeBarcodeModal();
+                const p = products.find(prod => prod.id === id);
+                processBarcode(barcode);
+            }
+        }
+
         // Sharing Utilities
         function shareWhatsApp() {
             let keys = Object.keys(order);
@@ -740,6 +2878,11 @@
                 jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
             }).from(document.getElementById('pdf-print-template')).save();
         }
+        
+        function closeBarcodeModal() {
+            document.getElementById('barcode-assoc-modal').classList.add('hidden');
+        }
     </script>
 </body>
 </html>
+```
