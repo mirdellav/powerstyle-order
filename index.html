@@ -26,8 +26,11 @@
     <header class="bg-slate-950 border-b border-slate-800 sticky top-0 z-40 px-4 py-3 shadow-xl">
         <div class="max-w-7xl mx-auto flex items-center justify-between">
             <div class="flex items-center space-x-3">
-                <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-amber-500 to-yellow-400 flex items-center justify-center shadow-lg shadow-amber-500/20">
-                    <i class="fa-solid fa-scissors text-slate-950 text-xl"></i>
+                <div class="relative w-12 h-12 rounded-xl bg-white border border-slate-800 flex items-center justify-center overflow-hidden shadow-lg" style="min-width: 48px;">
+                    <img src="logo.jpg" id="app-logo-img" alt="Logo" class="w-full h-full object-contain" onerror="this.style.display='none'; document.getElementById('app-logo-fallback').style.display='flex';">
+                    <div id="app-logo-fallback" class="hidden absolute inset-0 bg-gradient-to-tr from-amber-500 to-yellow-400 items-center justify-center">
+                        <i class="fa-solid fa-scissors text-slate-950 text-xl"></i>
+                    </div>
                 </div>
                 <div>
                     <h1 class="text-lg font-extrabold tracking-tight text-white flex items-center">
@@ -162,13 +165,16 @@
             <div style="border-bottom: 2px solid #0f172a; padding-bottom: 20px; margin-bottom: 20px;">
                 <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
                     <div style="display: flex; align-items: center;">
-                        <div style="width: 44px; height: 44px; background: linear-gradient(135deg, #f59e0b, #facc15); border-radius: 10px; display: flex; align-items: center; justify-content: center; margin-right: 12px; float: left;">
-                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#0f172a" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                                <circle cx="6" cy="6" r="3"></circle>
-                                <circle cx="6" cy="18" r="3"></circle>
-                                <line x1="9.8" y1="8.2" x2="20" y2="18.4"></line>
-                                <line x1="20" y1="5.6" x2="9.8" y2="15.8"></line>
-                            </svg>
+                        <div style="width: 60px; height: 60px; background-color: white; border: 1px solid #e2e8f0; border-radius: 8px; display: flex; align-items: center; justify-content: center; margin-right: 12px; float: left; overflow: hidden; position: relative;">
+                            <img src="logo.jpg" alt="Logo" style="max-width: 100%; max-height: 100%; object-fit: contain;" onerror="this.style.display='none'; document.getElementById('pdf-logo-fallback').style.display='flex';">
+                            <div id="pdf-logo-fallback" style="display: none; position: absolute; inset: 0; background: linear-gradient(135deg, #f59e0b, #facc15); align-items: center; justify-content: center;">
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#0f172a" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="margin-top: 18px; margin-left: 18px;">
+                                    <circle cx="6" cy="6" r="3"></circle>
+                                    <circle cx="6" cy="18" r="3"></circle>
+                                    <line x1="9.8" y1="8.2" x2="20" y2="18.4"></line>
+                                    <line x1="20" y1="5.6" x2="9.8" y2="15.8"></line>
+                                </svg>
+                            </div>
                         </div>
                         <div style="float: left;">
                             <h1 style="font-size: 22px; font-weight: 800; color: #0f172a; margin: 0; line-height: 1.1; letter-spacing: -0.5px;">
@@ -2480,12 +2486,12 @@
                 const headerHtml = `
                     <div class="flex justify-between items-start">
                         <div>
-                            <span class="px-2 py-0.5 bg-slate-900 rounded text-[10px] text-amber-400 font-bold uppercase">\${p.category}</span>
-                            <h3 class="text-sm font-bold text-white mt-1">\${p.name}</h3>
-                            <p class="text-xs text-slate-500">SKU: \${p.sku}</p>
+                            <span class="px-2 py-0.5 bg-slate-900 rounded text-[10px] text-amber-400 font-bold uppercase">${p.category}</span>
+                            <h3 class="text-sm font-bold text-white mt-1">${p.name}</h3>
+                            <p class="text-xs text-slate-500">SKU: ${p.sku}</p>
                         </div>
-                        <button onclick="changePackSize('\${p.id}')" class="text-xs bg-slate-900 px-2 py-1 rounded border border-slate-800 font-bold text-slate-200" title="Click to change custom box quantity">
-                            \${p.packSize} Pcs/Box
+                        <button onclick="changePackSize('${p.id}')" class="text-xs bg-slate-900 px-2 py-1 rounded border border-slate-800 font-bold text-slate-200" title="Click to change custom box quantity">
+                            ${p.packSize} Pcs/Box
                         </button>
                     </div>`;
 
@@ -2499,17 +2505,17 @@
                             <div class="text-center">
                                 <span class="text-xxs text-slate-400">Boxes</span>
                                 <div class="flex items-center justify-center space-x-1 mt-1">
-                                    <button onclick="adjustBox('\${p.id}', -1)" class="w-7 h-7 rounded bg-slate-900 font-bold">-</button>
-                                    <input type="number" id="box-\${p.id}" value="\${boxes}" onchange="onInputChange('\${p.id}')" class="w-10 text-center bg-slate-950 rounded text-xs py-0.5">
-                                    <button onclick="adjustBox('\${p.id}', 1)" class="w-7 h-7 rounded bg-slate-900 font-bold">+</button>
+                                    <button onclick="adjustBox('${p.id}', -1)" class="w-7 h-7 rounded bg-slate-900 font-bold">-</button>
+                                    <input type="number" id="box-${p.id}" value="${boxes}" onchange="onInputChange('${p.id}')" class="w-10 text-center bg-slate-950 rounded text-xs py-0.5">
+                                    <button onclick="adjustBox('${p.id}', 1)" class="w-7 h-7 rounded bg-slate-900 font-bold">+</button>
                                 </div>
                             </div>
                             <div class="text-center">
                                 <span class="text-xxs text-slate-400">Pieces</span>
                                 <div class="flex items-center justify-center space-x-1 mt-1">
-                                    <button onclick="adjustPieces('\${p.id}', -1)" class="w-7 h-7 rounded bg-slate-900 font-bold">-</button>
-                                    <input type="number" id="pcs-\${p.id}" value="\${pcs}" onchange="onInputChange('\${p.id}')" class="w-10 text-center bg-slate-950 rounded text-xs py-0.5">
-                                    <button onclick="adjustPieces('\${p.id}', 1)" class="w-7 h-7 rounded bg-slate-900 font-bold">+</button>
+                                    <button onclick="adjustPieces('${p.id}', -1)" class="w-7 h-7 rounded bg-slate-900 font-bold">-</button>
+                                    <input type="number" id="pcs-${p.id}" value="${pcs}" onchange="onInputChange('${p.id}')" class="w-10 text-center bg-slate-950 rounded text-xs py-0.5">
+                                    <button onclick="adjustPieces('${p.id}', 1)" class="w-7 h-7 rounded bg-slate-900 font-bold">+</button>
                                 </div>
                             </div>
                         </div>`;
@@ -2522,11 +2528,11 @@
                         const vPcs = qty % p.packSize;
                         varRows += `
                             <div class="flex justify-between items-center py-1 border-b border-slate-900/40 text-xs">
-                                <span class="text-slate-300">• \${v.name}</span>
+                                <span class="text-slate-300">• ${v.name}</span>
                                 <div class="flex items-center space-x-2">
-                                    <input type="number" id="v-box-\${p.id}-\${vidx}" value="\${vBoxes}" onchange="onVarChange('\${p.id}', \${vidx})" class="w-10 bg-slate-900 border border-slate-800 text-center rounded text-xs py-0.5">
+                                    <input type="number" id="v-box-${p.id}-${vidx}" value="${vBoxes}" onchange="onVarChange('${p.id}', ${vidx})" class="w-10 bg-slate-900 border border-slate-800 text-center rounded text-xs py-0.5">
                                     <span class="text-xxs text-slate-500">Box</span>
-                                    <input type="number" id="v-pcs-\${p.id}-\${vidx}" value="\${vPcs}" onchange="onVarChange('\${p.id}', \${vidx})" class="w-10 bg-slate-900 border border-slate-800 text-center rounded text-xs py-0.5">
+                                    <input type="number" id="v-pcs-${p.id}-${vidx}" value="${vPcs}" onchange="onVarChange('${p.id}', ${vidx})" class="w-10 bg-slate-900 border border-slate-800 text-center rounded text-xs py-0.5">
                                     <span class="text-xxs text-slate-500">Pcs</span>
                                 </div>
                             </div>`;
@@ -2536,10 +2542,10 @@
                         <div class="bg-slate-900/50 p-2 rounded-xl space-y-1">
                             <div class="flex justify-between text-xs text-slate-400 border-b border-slate-800 pb-1">
                                 <span>Sub-variations Rollup:</span>
-                                <strong class="text-amber-400" id="rollup-\${p.id}">\${formatQty(currentTotal, p.packSize)}</strong>
+                                <strong class="text-amber-400" id="rollup-${p.id}">${formatQty(currentTotal, p.packSize)}</strong>
                             </div>
-                            \${varRows}
-                            <button onclick="addCustomVar('\${p.id}')" class="text-[10px] text-amber-500 font-bold pt-1 block w-full text-right hover:underline">+ Add Custom Variation</button>
+                            ${varRows}
+                            <button onclick="addCustomVar('${p.id}')" class="text-[10px] text-amber-500 font-bold pt-1 block w-full text-right hover:underline">+ Add Custom Variation</button>
                         </div>`;
                 }
                 card.innerHTML = headerHtml + inputsHtml;
