@@ -1,23 +1,39 @@
+```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Powerstyle-0rder | Professional Barber Inventory</title>
+    <title>Powerstyle-0rder | Barber & Grooming Order Hub</title>
     
-    <!-- Tailwind CSS & Icons -->
+    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght=300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- FontAwesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
-    <!-- PDF & Barcode Libraries -->
+    <!-- html2pdf.js for Client-side PDF Generation -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    
+    <!-- html5-qrcode for Camera Barcode Scanning -->
     <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
 
     <style>
-        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #0f172a; color: #f8fafc; }
-        .no-scrollbar::-webkit-scrollbar { display: none; }
-        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: #0f172a;
+            color: #f8fafc;
+        }
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
     </style>
 </head>
 <body class="min-h-screen flex flex-col antialiased pb-20 md:pb-0">
@@ -26,102 +42,186 @@
     <header class="bg-slate-950 border-b border-slate-800 sticky top-0 z-40 px-4 py-3 shadow-xl">
         <div class="max-w-7xl mx-auto flex items-center justify-between">
             <div class="flex items-center space-x-3">
-                <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-amber-500 to-yellow-400 flex items-center justify-center shadow-lg">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-amber-500 to-yellow-400 flex items-center justify-center shadow-lg shadow-amber-500/20">
                     <i class="fa-solid fa-scissors text-slate-950 text-xl"></i>
                 </div>
                 <div>
-                    <h1 class="text-lg font-extrabold tracking-tight text-white">Powerstyle<span class="text-amber-400 font-light">-0rder</span></h1>
+                    <h1 class="text-lg font-extrabold tracking-tight text-white flex items-center">
+                        Powerstyle<span class="text-amber-400 font-light">-0rder</span>
+                    </h1>
                     <p class="text-xs text-slate-400">Professional Barber Product Order Hub</p>
                 </div>
             </div>
             
             <div class="flex items-center space-x-2">
-                <button onclick="triggerCSVImport()" class="p-2.5 bg-slate-900 hover:bg-slate-800 border border-slate-800 text-amber-400 rounded-xl transition text-sm" title="Upload CSV Catalog">
-                    <i class="fa-solid fa-file-csv mr-1"></i> <span class="hidden sm:inline text-xs">Load CSV</span>
+                <!-- CSV Upload Button -->
+                <button onclick="triggerCSVImport()" class="px-3 py-2 bg-slate-900 border border-slate-800 hover:bg-amber-950/40 hover:border-amber-800 text-amber-400 rounded-xl transition duration-200 text-xs font-semibold flex items-center space-x-1">
+                    <i class="fa-solid fa-file-csv"></i>
+                    <span>Load CSV</span>
                 </button>
-                <button onclick="clearOrder()" class="p-2.5 bg-slate-900 hover:bg-red-950 border border-slate-800 text-slate-400 hover:text-red-400 rounded-xl transition text-sm">
+
+                <!-- Clear Cart -->
+                <button onclick="clearOrder()" class="p-2 bg-slate-900 border border-slate-800 hover:bg-red-950/40 hover:border-red-800 text-slate-400 hover:text-red-400 rounded-xl transition duration-200 text-sm" title="Clear Active Order">
                     <i class="fa-solid fa-trash-can"></i>
                 </button>
             </div>
         </div>
     </header>
 
+    <!-- Hidden File Input for CSV Import -->
     <input type="file" id="csv-file-input" class="hidden" accept=".csv" onchange="handleCSVFileSelect(event)">
 
-    <!-- Main Grid -->
+    <!-- Main Content Grid -->
     <main class="flex-grow max-w-7xl w-full mx-auto px-4 py-4 md:py-6 grid grid-cols-1 lg:grid-cols-12 gap-6">
         
-        <!-- Left Column: Products -->
+        <!-- Left Column: Products List & Controls (7 cols) -->
         <section class="lg:col-span-7 flex flex-col space-y-4">
+            
+            <!-- Quick Actions & Search -->
             <div class="bg-slate-950 border border-slate-800 rounded-2xl p-4 shadow-lg space-y-3">
                 <div class="flex flex-col sm:flex-row gap-2">
                     <div class="relative flex-grow">
                         <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-slate-500">
                             <i class="fa-solid fa-magnifying-glass"></i>
                         </span>
-                        <input type="text" id="search-input" placeholder="Search products..." class="w-full pl-9 pr-4 py-2.5 bg-slate-900 border border-slate-800 rounded-xl text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-amber-500 text-sm">
+                        <input type="text" id="search-input" placeholder="Search by name, SKU or category..." 
+                            class="w-full pl-9 pr-4 py-2.5 bg-slate-900 border border-slate-800 rounded-xl text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent text-sm">
                     </div>
-                    <button onclick="toggleScanner()" class="px-4 py-2.5 bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold rounded-xl flex items-center justify-center space-x-2 transition shadow-lg shadow-amber-500/10">
-                        <i class="fa-solid fa-camera"></i> <span class="text-xs uppercase tracking-wider">Scan Barcode</span>
+                    
+                    <button onclick="toggleScanner()" class="px-4 py-2.5 bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold rounded-xl flex items-center justify-center space-x-2 transition duration-200 shadow-lg shadow-amber-500/10">
+                        <i class="fa-solid fa-camera"></i>
+                        <span class="text-xs uppercase tracking-wider">Scan Barcode</span>
                     </button>
                 </div>
-                <div class="flex space-x-2 overflow-x-auto no-scrollbar py-1" id="category-pills"></div>
+
+                <div class="flex space-x-2 overflow-x-auto no-scrollbar py-1" id="category-pills">
+                    <!-- Dynamic Categories will appear here -->
+                </div>
             </div>
 
-            <!-- Scanner Frame -->
+            <!-- Barcode Scanner Window -->
             <div id="scanner-container" class="hidden bg-slate-950 border border-slate-800 rounded-2xl p-4 shadow-2xl relative">
-                <button onclick="toggleScanner()" class="absolute top-3 right-3 text-slate-400 hover:text-white z-10 p-2 rounded-full bg-slate-900">
+                <button onclick="toggleScanner()" class="absolute top-3 right-3 text-slate-400 hover:text-white z-10 p-2 rounded-full bg-slate-900 border border-slate-800">
                     <i class="fa-solid fa-xmark"></i>
                 </button>
+                <h3 class="text-sm font-semibold mb-3 text-amber-400 flex items-center">
+                    <i class="fa-solid fa-barcode mr-2"></i> Camera Barcode Scanner
+                </h3>
                 <div id="interactive-reader" class="w-full bg-black rounded-xl overflow-hidden border border-slate-800"></div>
             </div>
 
-            <!-- Custom Barcode Mapping Dialog -->
+            <!-- Custom Barcode Association Dialog -->
             <div id="barcode-assoc-modal" class="hidden bg-amber-950/20 border border-amber-800 rounded-2xl p-4 shadow-xl space-y-3">
                 <div class="flex items-center justify-between">
-                    <h3 class="text-sm font-bold text-amber-400"><i class="fa-solid fa-circle-exclamation mr-2"></i>Link Unknown Barcode</h3>
-                    <button onclick="closeBarcodeModal()" class="text-slate-400"><i class="fa-solid fa-xmark"></i></button>
+                    <h3 class="text-sm font-bold text-amber-400 flex items-center">
+                        <i class="fa-solid fa-circle-exclamation mr-2"></i> Unknown Barcode Detected!
+                    </h3>
+                    <button onclick="closeBarcodeModal()" class="text-slate-400 hover:text-white">
+                        <i class="fa-solid fa-xmark"></i>
+                    </button>
                 </div>
-                <p class="text-xs">Scanned Barcode: <strong class="text-white select-all" id="scanned-barcode-value"></strong></p>
-                <select id="barcode-product-select" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-sm text-white"></select>
-                <div class="flex justify-end space-x-2">
-                    <button onclick="saveBarcodeAssociation()" class="px-4 py-1.5 bg-amber-500 hover:bg-amber-400 text-slate-950 font-semibold text-xs rounded-lg transition">Link & Add</button>
+                <p class="text-xs text-slate-300">
+                    Scanned Barcode: <strong class="text-white select-all" id="scanned-barcode-value"></strong>
+                </p>
+                <div class="space-y-2">
+                    <label class="block text-xs text-slate-400">Select which product this barcode belongs to:</label>
+                    <select id="barcode-product-select" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:ring-1 focus:ring-amber-500">
+                        <!-- Dynamic Options -->
+                    </select>
+                </div>
+                <div class="flex justify-end space-x-2 pt-2">
+                    <button onclick="closeBarcodeModal()" class="px-3 py-1.5 bg-slate-900 hover:bg-slate-800 border border-slate-800 text-xs rounded-lg text-slate-300 transition">
+                        Cancel
+                    </button>
+                    <button onclick="saveBarcodeAssociation()" class="px-4 py-1.5 bg-amber-500 hover:bg-amber-400 text-slate-950 font-semibold text-xs rounded-lg transition">
+                        Link & Add to Order
+                    </button>
                 </div>
             </div>
 
+            <div class="flex items-center justify-between px-1">
+                <span class="text-xs text-slate-400" id="product-count-display">No catalog loaded yet.</span>
+            </div>
+
+            <!-- Products List Container -->
             <div class="flex-grow overflow-y-auto max-h-[60vh] lg:max-h-[70vh] space-y-3 pr-1" id="products-list-container">
-                <div class="text-center py-12 bg-slate-950 rounded-2xl border border-slate-800 text-slate-500">
-                    <i class="fa-solid fa-file-csv text-4xl mb-3 text-slate-700"></i>
-                    <p class="text-sm font-medium">No catalog loaded.</p>
-                    <button onclick="triggerCSVImport()" class="mt-3 px-4 py-2 bg-amber-500 text-slate-950 font-bold rounded-xl text-xs transition">Upload export_items.csv</button>
+                <!-- Landing view helper when catalog is empty -->
+                <div class="text-center py-16 bg-slate-950 border border-slate-800 rounded-3xl p-6">
+                    <div class="w-16 h-16 bg-amber-500/10 text-amber-500 rounded-2xl flex items-center justify-center mx-auto text-3xl mb-4">
+                        <i class="fa-solid fa-file-csv"></i>
+                    </div>
+                    <h3 class="text-lg font-bold text-white">Import Your Product Catalog</h3>
+                    <p class="text-slate-400 text-xs mt-2 max-w-sm mx-auto leading-relaxed">
+                        Click the button below or "Load CSV" at the top to select your <code class="text-amber-400">export_items.csv</code> file.
+                    </p>
+                    <button onclick="triggerCSVImport()" class="mt-5 px-6 py-2.5 bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold rounded-xl text-xs uppercase tracking-wider transition duration-200">
+                        Choose export_items.csv
+                    </button>
                 </div>
             </div>
+
         </section>
 
-        <!-- Right Column: Order Sheet -->
+        <!-- Right Column: Order Sheet Panel (5 cols) -->
         <section class="lg:col-span-5 flex flex-col space-y-4">
+            
             <div class="bg-slate-950 border border-slate-800 rounded-2xl shadow-xl flex flex-col sticky top-24 max-h-[85vh]">
+                
                 <div class="p-4 border-b border-slate-800 flex items-center justify-between bg-slate-950/80 rounded-t-2xl">
-                    <h2 class="text-sm font-extrabold tracking-wider uppercase text-white">Active Order Sheet</h2>
-                    <span class="bg-slate-900 border border-slate-800 px-2.5 py-1 rounded-lg text-xs text-slate-300">Total: <strong class="text-amber-400" id="cart-unique-count">0</strong></span>
+                    <div class="flex items-center space-x-2">
+                        <div class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></div>
+                        <h2 class="text-sm font-extrabold tracking-wider uppercase text-white">Active Order Sheet</h2>
+                    </div>
+                    <div class="bg-slate-900 border border-slate-800 px-2.5 py-1 rounded-lg text-xs text-slate-300">
+                        Items: <strong class="text-amber-400" id="cart-unique-count">0</strong>
+                    </div>
                 </div>
 
-                <div class="flex-grow overflow-y-auto p-4 space-y-3 min-h-[150px] max-h-[45vh]" id="order-items-container"></div>
+                <div class="flex-grow overflow-y-auto p-4 space-y-3 min-h-[200px] max-h-[45vh]" id="order-items-container">
+                    <div class="flex flex-col items-center justify-center py-12 text-slate-500 text-center">
+                        <i class="fa-solid fa-basket-shopping text-4xl mb-3 text-slate-700"></i>
+                        <p class="text-sm font-medium">Order sheet is empty.</p>
+                        <p class="text-xs mt-1 text-slate-600">Enter box/piece quantities to build order.</p>
+                    </div>
+                </div>
 
-                <!-- Footer Tools -->
                 <div class="p-4 border-t border-slate-800 bg-slate-950/90 rounded-b-2xl space-y-3">
+                    
                     <div class="grid grid-cols-2 gap-2 text-xs">
-                        <input type="text" id="order-dealer-name" placeholder="Dealer Name" value="Powerstyle Ltd" class="w-full bg-slate-900 border border-slate-800 rounded-lg px-2.5 py-1.5 text-white">
-                        <input type="text" id="order-notes-input" placeholder="Notes (Optional)" class="w-full bg-slate-900 border border-slate-800 rounded-lg px-2.5 py-1.5 text-white">
+                        <div>
+                            <label class="block text-slate-500 mb-1">Supplier / Dealer</label>
+                            <input type="text" id="order-dealer-name" placeholder="Supplier Name" value="Powerstyle Ltd"
+                                class="w-full bg-slate-900 border border-slate-800 rounded-lg px-2.5 py-1.5 text-white focus:outline-none focus:ring-1 focus:ring-amber-500">
+                        </div>
+                        <div>
+                            <label class="block text-slate-500 mb-1">Order Notes</label>
+                            <input type="text" id="order-notes-input" placeholder="Urgent, Ship together, etc." 
+                                class="w-full bg-slate-900 border border-slate-800 rounded-lg px-2.5 py-1.5 text-white focus:outline-none focus:ring-1 focus:ring-amber-500">
+                        </div>
                     </div>
-                    <div class="grid grid-cols-3 gap-2 pt-2 text-sm">
-                        <button onclick="exportToPDF()" class="py-2.5 bg-red-600 hover:bg-red-500 text-white font-bold rounded-xl flex items-center justify-center space-x-1"><i class="fa-solid fa-file-pdf"></i><span>PDF</span></button>
-                        <button onclick="shareWhatsApp()" class="py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white font-bold rounded-xl flex items-center justify-center space-x-1"><i class="fa-brands fa-whatsapp text-lg"></i><span>WhatsApp</span></button>
-                        <button onclick="shareMail()" class="py-2.5 bg-blue-600 hover:bg-blue-500 text-white font-bold rounded-xl flex items-center justify-center space-x-1"><i class="fa-solid fa-envelope"></i><span>Mail</span></button>
+
+                    <div class="grid grid-cols-3 gap-2 pt-2">
+                        <button onclick="exportToPDF()" class="py-2.5 bg-gradient-to-r from-red-600 to-red-500 hover:from-red-500 hover:to-red-400 text-white font-bold rounded-xl flex items-center justify-center space-x-1.5 transition text-xs uppercase tracking-wider">
+                            <i class="fa-solid fa-file-pdf text-sm"></i>
+                            <span>PDF</span>
+                        </button>
+                        
+                        <button onclick="shareWhatsApp()" class="py-2.5 bg-gradient-to-r from-emerald-600 to-emerald-500 hover:from-emerald-500 hover:to-emerald-400 text-white font-bold rounded-xl flex items-center justify-center space-x-1.5 transition text-xs uppercase tracking-wider">
+                            <i class="fa-brands fa-whatsapp text-sm"></i>
+                            <span>WhatsApp</span>
+                        </button>
+                        
+                        <button onclick="shareMail()" class="py-2.5 bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-500 hover:to-blue-400 text-white font-bold rounded-xl flex items-center justify-center space-x-1.5 transition text-xs uppercase tracking-wider">
+                            <i class="fa-solid fa-envelope text-sm"></i>
+                            <span>Email</span>
+                        </button>
                     </div>
                 </div>
+
             </div>
+
         </section>
+
     </main>
 
     <!-- Hidden PDF Template -->
@@ -129,27 +229,52 @@
         <div id="pdf-print-template" class="p-8 bg-white text-slate-900 leading-relaxed text-sm" style="width: 790px;">
             <div class="flex justify-between items-start border-b-2 border-slate-900 pb-5">
                 <div>
-                    <h1 class="text-3xl font-extrabold text-slate-900">PURCHASE ORDER</h1>
-                    <p class="text-xs text-slate-500 mt-1">POWERSTYLE Ltd PROFESSIONAL INVENTORY</p>
+                    <h1 class="text-3xl font-extrabold tracking-tight text-slate-900">PURCHASE ORDER</h1>
+                    <p class="text-xs text-slate-500 mt-1">POWERSTYLE Ltd PROFESSIONAL BARBER INVENTORY</p>
                 </div>
                 <div class="text-right text-xs text-slate-600">
-                    <p class="font-bold text-sm text-slate-900" id="pdf-dealer-title"></p>
-                    <p id="pdf-date"></p>
-                    <p id="pdf-ref"></p>
+                    <p class="font-bold text-sm text-slate-900" id="pdf-dealer-title">Supplier: Powerstyle Ltd</p>
+                    <p id="pdf-date">Date: --/--/----</p>
+                    <p id="pdf-ref">Ref: #PSO-XXXX</p>
                 </div>
             </div>
-            <div class="my-4 text-xs bg-slate-50 p-4 rounded-lg border border-slate-100" id="pdf-notes-display"></div>
+
+            <div class="grid grid-cols-2 gap-4 my-6 text-xs bg-slate-50 p-4 rounded-lg border border-slate-100">
+                <div>
+                    <p class="text-slate-500 uppercase tracking-wider font-semibold text-[10px]">Prepared By</p>
+                    <p class="font-bold text-slate-800 text-sm mt-0.5">Powerstyle Ltd Inventory Manager</p>
+                    <p class="text-slate-600">Internal Depot System</p>
+                </div>
+                <div>
+                    <p class="text-slate-500 uppercase tracking-wider font-semibold text-[10px]">Order Notes</p>
+                    <p class="font-semibold text-slate-800 mt-0.5" id="pdf-notes-display">No notes provided.</p>
+                </div>
+            </div>
+
             <table class="w-full text-left border-collapse text-xs mt-6">
                 <thead>
                     <tr class="bg-slate-900 text-white uppercase text-[10px] tracking-wider">
-                        <th class="py-3 px-4 rounded-l-md">Product Name / Variations</th>
+                        <th class="py-3 px-4 rounded-l-md">Product Name / Custom Variations</th>
                         <th class="py-3 px-3">SKU</th>
                         <th class="py-3 px-3 text-center">Pack Size</th>
                         <th class="py-3 px-4 text-right rounded-r-md">Total Ordered Qty</th>
                     </tr>
                 </thead>
-                <tbody id="pdf-table-body" class="divide-y divide-slate-100"></tbody>
+                <tbody id="pdf-table-body" class="divide-y divide-slate-100">
+                    <!-- Dynamic Rows -->
+                </tbody>
             </table>
+
+            <div class="mt-16 pt-8 border-t border-slate-100 flex justify-between text-xs text-slate-500">
+                <div>
+                    <p>Generated via Powerstyle-0rder Platform</p>
+                </div>
+                <div class="text-center w-48">
+                    <p class="font-bold text-slate-700">Authorized Signature</p>
+                    <div class="h-10 border-b border-dashed border-slate-300 my-2"></div>
+                    <p class="text-[10px]">Inventory Controller</p>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -166,13 +291,20 @@
         let orderRef = localStorage.getItem('pso_ref') || '#PSO-' + Math.floor(100000 + Math.random() * 900000);
         
         localStorage.setItem('pso_ref', orderRef);
-        document.getElementById('current-date').innerText = new Date().toLocaleDateString('en-US');
 
         window.onload = function() {
-            if (products.length > 0) initCatalogUI();
+            document.getElementById('search-input').addEventListener('input', (e) => {
+                searchQuery = e.target.value;
+                renderProducts();
+            });
+            if (products.length > 0) {
+                initCatalogUI();
+            }
         };
 
-        function triggerCSVImport() { document.getElementById('csv-file-input').click(); }
+        function triggerCSVImport() {
+            document.getElementById('csv-file-input').click();
+        }
 
         function handleCSVFileSelect(event) {
             const file = event.target.files;
@@ -186,7 +318,7 @@
                     initCatalogUI();
                     alert(`Loaded ${parsed.length} products successfully!`);
                 } else {
-                    alert("Invalid format! Please upload export_items.csv");
+                    alert("Could not parse file. Please upload export_items.csv");
                 }
             };
             reader.readAsText(file, 'UTF-8');
@@ -195,6 +327,7 @@
         function parseCSVEngine(text) {
             const lines = text.split(/\r?\n/);
             if (lines.length < 2) return [];
+            
             const getCells = (line) => {
                 let cells = [], inQuotes = false, current = "";
                 for (let char of line) {
@@ -202,10 +335,17 @@
                     else if (char === ',' && !inQuotes) { cells.push(current.trim()); current = ""; }
                     else current += char;
                 }
-                cells.push(current.trim()); return cells;
+                cells.push(current.trim());
+                return cells;
             };
+
             const headers = getCells(lines);
-            const nameIdx = headers.indexOf('Name'), skuIdx = headers.indexOf('SKU'), catIdx = headers.indexOf('Category'), barIdx = headers.indexOf('Barcode'), handIdx = headers.indexOf('Handle');
+            const nameIdx = headers.indexOf('Name');
+            const skuIdx = headers.indexOf('SKU');
+            const catIdx = headers.indexOf('Category');
+            const barIdx = headers.indexOf('Barcode');
+            const handIdx = headers.indexOf('Handle');
+
             if (nameIdx === -1) return [];
 
             let list = [];
@@ -214,36 +354,63 @@
                 const cells = getCells(lines[i]);
                 const name = cells[nameIdx];
                 if (!name || name === "Name") continue;
+
                 const sku = skuIdx !== -1 ? cells[skuIdx] : "";
-                const category = catIdx !== -1 ? cells[catIdx] : "Uncategorized";
+                const category = catIdx !== -1 && cells[catIdx] ? cells[catIdx] : "Uncategorized";
                 const barcode = barIdx !== -1 ? cells[barIdx] : "";
                 const id = sku || (handIdx !== -1 ? cells[handIdx] : "id-" + i);
 
                 let variations = [];
-                if (name.includes('TSF Shaving Gel')) {
-                    variations = [{"name": "Sapphire", "total": 0}, {"name": "Cristal", "total": 0}, {"name": "Golden", "total": 0}];
+                // Add default Sapphire, Cristal, Golden sub-variations for TSF Shaving Gels
+                if (name.toLowerCase().includes('tsf shaving gel')) {
+                    variations = [
+                        { name: "Sapphire", total: 0 },
+                        { name: "Cristal", total: 0 },
+                        { name: "Golden", total: 0 }
+                    ];
                 }
 
-                list.push({ id, name, sku, category, barcode, packSize: 12, variations });
+                list.push({
+                    id,
+                    name,
+                    sku,
+                    category,
+                    barcode,
+                    packSize: 12,
+                    variations
+                });
             }
             return list;
         }
 
         function initCatalogUI() {
-            products.forEach(p => { if (customVariations[p.id]) p.variations = customVariations[p.id]; });
-            renderCategories(); renderProducts(); updateOrderSummary(); populateBarcodeDropdown();
+            products.forEach(p => {
+                if (customVariations[p.id]) p.variations = customVariations[p.id];
+            });
+            renderCategories();
+            renderProducts();
+            updateOrderSummary();
+            populateBarcodeDropdown();
         }
 
         function renderCategories() {
             const categories = ['ALL'];
-            products.forEach(p => { if (p.category && !categories.includes(p.category)) categories.push(p.category); });
+            products.forEach(p => {
+                if (p.category && !categories.includes(p.category)) {
+                    categories.push(p.category);
+                }
+            });
             const container = document.getElementById('category-pills');
             container.innerHTML = '';
             categories.forEach(cat => {
                 const pill = document.createElement('button');
-                pill.className = `flex-shrink-0 px-3 py-1.5 rounded-lg text-xs font-semibold border ${currentCategory === cat ? 'bg-amber-500 text-slate-950 border-amber-500' : 'bg-slate-900 text-slate-400 border-slate-800'}`;
+                pill.className = `flex-shrink-0 px-3.5 py-1.5 rounded-lg text-xs font-semibold border ${currentCategory === cat ? 'bg-amber-500 text-slate-950 border-amber-500' : 'bg-slate-900 text-slate-400 border-slate-800 hover:text-slate-200'}`;
                 pill.innerText = cat;
-                pill.onclick = () => { currentCategory = cat; renderCategories(); renderProducts(); };
+                pill.onclick = () => {
+                    currentCategory = cat;
+                    renderCategories();
+                    renderProducts();
+                };
                 container.appendChild(pill);
             });
         }
@@ -251,39 +418,89 @@
         function renderProducts() {
             const container = document.getElementById('products-list-container');
             container.innerHTML = '';
+            
             const filtered = products.filter(p => {
                 const matchesCat = currentCategory === 'ALL' || p.category === currentCategory;
-                const matchesSearch = p.name.toLowerCase().includes(searchQuery.toLowerCase()) || p.sku.toLowerCase().includes(searchQuery.toLowerCase());
+                const matchesSearch = p.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
+                                      p.sku.toLowerCase().includes(searchQuery.toLowerCase());
                 return matchesCat && matchesSearch;
             });
 
             document.getElementById('product-count-display').innerText = `Showing ${filtered.length} products`;
+
             if (filtered.length === 0) {
-                container.innerHTML = `<div class="text-center py-12"><p class="text-sm text-slate-500">No products found.</p></div>`;
+                container.innerHTML = `<div class="text-center py-12"><p class="text-sm text-slate-500">No products found matching filters.</p></div>`;
                 return;
             }
 
             filtered.forEach(p => {
                 const card = document.createElement('div');
-                card.id = `product-card-${p.id}`;
                 card.className = "bg-slate-950 border border-slate-800 rounded-2xl p-4 flex flex-col space-y-3";
                 
-                const headerHtml = `<div class="flex justify-between items-start"><div><span class="px-2 py-0.5 bg-slate-900 rounded text-[10px] text-amber-400 font-bold uppercase">${p.category}</span><h3 class="text-sm font-bold text-white mt-1">${p.name}</h3><p class="text-xs text-slate-500">SKU: ${p.sku}</p></div><button onclick="changePackSize('${p.id}')" class="text-xs bg-slate-900 px-2 py-1 rounded border border-slate-800 font-bold text-slate-200">${p.packSize} Pcs/Box</button></div>`;
+                const headerHtml = `
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <span class="px-2 py-0.5 bg-slate-900 rounded text-[10px] text-amber-400 font-bold uppercase">${p.category}</span>
+                            <h3 class="text-sm font-bold text-white mt-1">${p.name}</h3>
+                            <p class="text-xs text-slate-500">SKU: ${p.sku}</p>
+                        </div>
+                        <button onclick="changePackSize('${p.id}')" class="text-xs bg-slate-900 px-2 py-1 rounded border border-slate-800 font-bold text-slate-200" title="Click to change custom box quantity">
+                            ${p.packSize} Pcs/Box
+                        </button>
+                    </div>`;
 
                 let inputsHtml = "";
                 if (!p.variations || p.variations.length === 0) {
                     const total = order[p.id] ? order[p.id].total : 0;
-                    const boxes = Math.floor(total / p.packSize), pcs = total % p.packSize;
-                    inputsHtml = `<div class="grid grid-cols-2 gap-3 bg-slate-900/50 p-2 rounded-xl"><div class="text-center"><span class="text-xxs text-slate-400">Boxes</span><div class="flex items-center justify-center space-x-1 mt-1"><button onclick="adjustBox('${p.id}', -1)" class="w-7 h-7 rounded bg-slate-900 font-bold">-</button><input type="number" id="box-${p.id}" value="${boxes}" onchange="onInputChange('${p.id}')" class="w-10 text-center bg-slate-950 rounded text-xs py-0.5"><button onclick="adjustBox('${p.id}', 1)" class="w-7 h-7 rounded bg-slate-900 font-bold">+</button></div></div><div class="text-center"><span class="text-xxs text-slate-400">Pieces</span><div class="flex items-center justify-center space-x-1 mt-1"><button onclick="adjustPieces('${p.id}', -1)" class="w-7 h-7 rounded bg-slate-900 font-bold">-</button><input type="number" id="pcs-${p.id}" value="${pcs}" onchange="onInputChange('${p.id}')" class="w-10 text-center bg-slate-950 rounded text-xs py-0.5"><button onclick="adjustPieces('${p.id}', 1)" class="w-7 h-7 rounded bg-slate-900 font-bold">+</button></div></div></div>`;
+                    const boxes = Math.floor(total / p.packSize);
+                    const pcs = total % p.packSize;
+                    inputsHtml = `
+                        <div class="grid grid-cols-2 gap-3 bg-slate-900/50 p-2 rounded-xl">
+                            <div class="text-center">
+                                <span class="text-xxs text-slate-400">Boxes</span>
+                                <div class="flex items-center justify-center space-x-1 mt-1">
+                                    <button onclick="adjustBox('${p.id}', -1)" class="w-7 h-7 rounded bg-slate-900 font-bold">-</button>
+                                    <input type="number" id="box-${p.id}" value="${boxes}" onchange="onInputChange('${p.id}')" class="w-10 text-center bg-slate-950 rounded text-xs py-0.5">
+                                    <button onclick="adjustBox('${p.id}', 1)" class="w-7 h-7 rounded bg-slate-900 font-bold">+</button>
+                                </div>
+                            </div>
+                            <div class="text-center">
+                                <span class="text-xxs text-slate-400">Pieces</span>
+                                <div class="flex items-center justify-center space-x-1 mt-1">
+                                    <button onclick="adjustPieces('${p.id}', -1)" class="w-7 h-7 rounded bg-slate-900 font-bold">-</button>
+                                    <input type="number" id="pcs-${p.id}" value="${pcs}" onchange="onInputChange('${p.id}')" class="w-10 text-center bg-slate-950 rounded text-xs py-0.5">
+                                    <button onclick="adjustPieces('${p.id}', 1)" class="w-7 h-7 rounded bg-slate-900 font-bold">+</button>
+                                </div>
+                            </div>
+                        </div>`;
                 } else {
                     let varRows = "";
                     p.variations.forEach((v, vidx) => {
                         const saved = order[p.id]?.variations?.find(ov => ov.name === v.name);
                         const qty = saved ? saved.total : 0;
-                        const vBoxes = Math.floor(qty / p.packSize), vPcs = qty % p.packSize;
-                        varRows += `<div class="flex justify-between items-center py-1 border-b border-slate-900/40 text-xs"><span class="text-slate-300">• ${v.name}</span><div class="flex space-x-2"><input type="number" id="v-box-${p.id}-${vidx}" value="${vBoxes}" onchange="onVarChange('${p.id}', ${vidx})" class="w-10 bg-slate-900 border border-slate-800 text-center rounded"><span class="text-xxs text-slate-500">Box</span><input type="number" id="v-pcs-${p.id}-${vidx}" value="${vPcs}" onchange="onVarChange('${p.id}', ${vidx})" class="w-10 bg-slate-900 border border-slate-800 text-center rounded"><span class="text-xxs text-slate-500">Pcs</span></div></div>`;
+                        const vBoxes = Math.floor(qty / p.packSize);
+                        const vPcs = qty % p.packSize;
+                        varRows += `
+                            <div class="flex justify-between items-center py-1 border-b border-slate-900/40 text-xs">
+                                <span class="text-slate-300">• ${v.name}</span>
+                                <div class="flex items-center space-x-2">
+                                    <input type="number" id="v-box-${p.id}-${vidx}" value="${vBoxes}" onchange="onVarChange('${p.id}', ${vidx})" class="w-10 bg-slate-900 border border-slate-800 text-center rounded text-xs py-0.5">
+                                    <span class="text-xxs text-slate-500">Box</span>
+                                    <input type="number" id="v-pcs-${p.id}-${vidx}" value="${vPcs}" onchange="onVarChange('${p.id}', ${vidx})" class="w-10 bg-slate-900 border border-slate-800 text-center rounded text-xs py-0.5">
+                                    <span class="text-xxs text-slate-500">Pcs</span>
+                                </div>
+                            </div>`;
                     });
-                    inputsHtml = `<div class="bg-slate-900/50 p-2 rounded-xl space-y-1"><div class="flex justify-between text-xs text-slate-400 border-b border-slate-800 pb-1"><span>Sub-variations Rollup:</span><strong class="text-amber-400" id="rollup-${p.id}">0 Pcs</strong></div>${varRows}<button onclick="addCustomVar('${p.id}')" class="text-[10px] text-amber-500 font-bold pt-1 block w-full text-right">+ Add Custom Variation</button></div>`;
+                    const currentTotal = order[p.id] ? order[p.id].total : 0;
+                    inputsHtml = `
+                        <div class="bg-slate-900/50 p-2 rounded-xl space-y-1">
+                            <div class="flex justify-between text-xs text-slate-400 border-b border-slate-800 pb-1">
+                                <span>Sub-variations Rollup:</span>
+                                <strong class="text-amber-400" id="rollup-${p.id}">${Math.floor(currentTotal/p.packSize)} Box & ${currentTotal % p.packSize} Pcs</strong>
+                            </div>
+                            ${varRows}
+                            <button onclick="addCustomVar('${p.id}')" class="text-[10px] text-amber-500 font-bold pt-1 block w-full text-right hover:underline">+ Add Custom Variation</button>
+                        </div>`;
                 }
                 card.innerHTML = headerHtml + inputsHtml;
                 container.appendChild(card);
@@ -292,14 +509,21 @@
 
         function changePackSize(id) {
             const p = products.find(prod => prod.id === id);
-            const size = parseInt(prompt("Enter Pack Size:", p.packSize));
-            if (size > 0) { p.packSize = size; if (order[id]) order[id].packSize = size; saveState(); renderProducts(); updateOrderSummary(); }
+            const size = parseInt(prompt("Enter Pack Size (Qty per Box):", p.packSize));
+            if (size > 0) {
+                p.packSize = size;
+                if (order[id]) order[id].packSize = size;
+                saveState();
+                renderProducts();
+                updateOrderSummary();
+            }
         }
 
         function adjustBox(id, delta) {
             const p = products.find(prod => prod.id === id);
             let current = order[id]?.total || 0;
-            let boxes = Math.floor(current / p.packSize), pcs = current % p.packSize;
+            let boxes = Math.floor(current / p.packSize);
+            let pcs = current % p.packSize;
             updateProductTotal(p, Math.max(0, boxes + delta) * p.packSize + pcs);
             renderProducts();
         }
@@ -307,7 +531,8 @@
         function adjustPieces(id, delta) {
             const p = products.find(prod => prod.id === id);
             let current = order[id]?.total || 0;
-            let boxes = Math.floor(current / p.packSize), pcs = current % p.packSize;
+            let boxes = Math.floor(current / p.packSize);
+            let pcs = current % p.packSize;
             updateProductTotal(p, boxes * p.packSize + Math.max(0, pcs + delta));
             renderProducts();
         }
@@ -320,9 +545,13 @@
         }
 
         function updateProductTotal(p, total) {
-            if (total <= 0) delete order[p.id];
-            else order[p.id] = { name: p.name, sku: p.sku, packSize: p.packSize, total, variations: [] };
-            saveState(); updateOrderSummary();
+            if (total <= 0) {
+                delete order[p.id];
+            } else {
+                order[p.id] = { name: p.name, sku: p.sku, packSize: p.packSize, total, variations: [] };
+            }
+            saveState();
+            updateOrderSummary();
         }
 
         function onVarChange(id, vidx) {
@@ -334,21 +563,31 @@
             if (!order[id]) order[id] = { name: p.name, sku: p.sku, packSize: p.packSize, total: 0, variations: [] };
             const vName = p.variations[vidx].name;
             let vObj = order[id].variations.find(v => v.name === vName);
-            if (!vObj) { vObj = { name: vName, total: 0 }; order[id].variations.push(vObj); }
+            if (!vObj) {
+                vObj = { name: vName, total: 0 };
+                order[id].variations.push(vObj);
+            }
             vObj.total = varTotal;
 
             order[id].total = order[id].variations.reduce((sum, v) => sum + v.total, 0);
-            if (order[id].total === 0) delete order[id];
-            else order[id].variations = order[id].variations.filter(v => v.total > 0);
+            if (order[id].total === 0) {
+                delete order[id];
+            } else {
+                order[id].variations = order[id].variations.filter(v => v.total > 0);
+            }
 
-            saveState(); updateOrderSummary();
+            saveState();
+            updateOrderSummary();
             const rollup = document.getElementById(`rollup-${id}`);
-            if (rollup) rollup.innerText = `${Math.floor(order[id].total/p.packSize)} Box & ${order[id].total % p.packSize} Pcs`;
+            if (rollup) {
+                const tot = order[id] ? order[id].total : 0;
+                rollup.innerText = `${Math.floor(tot/p.packSize)} Box & ${tot % p.packSize} Pcs`;
+            }
         }
 
         function addCustomVar(id) {
             const p = products.find(prod => prod.id === id);
-            const name = prompt("Variation name:");
+            const name = prompt("Variation name (e.g. Lavender, Lemon):");
             if (name) {
                 p.variations.push({ name, total: 0 });
                 customVariations[id] = p.variations;
@@ -364,7 +603,12 @@
             document.getElementById('cart-unique-count').innerText = keys.length;
 
             if (keys.length === 0) {
-                container.innerHTML = `<div class="text-center py-8 text-slate-500 text-xs"><i class="fa-solid fa-cart-shopping text-3xl mb-2 text-slate-700"></i><p>Order sheet is empty.</p></div>`;
+                container.innerHTML = `
+                    <div class="flex flex-col items-center justify-center py-12 text-slate-500 text-center">
+                        <i class="fa-solid fa-basket-shopping text-4xl mb-3 text-slate-700"></i>
+                        <p class="text-sm font-medium">Order sheet is empty.</p>
+                        <p class="text-xs mt-1 text-slate-600">Enter box/piece quantities to build order.</p>
+                    </div>`;
                 return;
             }
 
@@ -374,100 +618,85 @@
                 div.className = "bg-slate-900 border border-slate-800 rounded-xl p-3 relative space-y-1 text-xs";
                 
                 let qtyStr = `${Math.floor(item.total/item.packSize)} Box & ${item.total%item.packSize} Pcs`;
-                let varsStr = item.variations.map(v => `<div class="pl-3 border-l border-slate-800 text-slate-400">• ${v.name}: ${Math.floor(v.total/item.packSize)} Box & ${v.total%item.packSize} Pcs</div>`).join('');
+                let varsStr = item.variations.map(v => `
+                    <div class="pl-3 border-l border-slate-800 text-slate-400 mt-1">
+                        • ${v.name}: ${Math.floor(v.total/item.packSize)} Box & ${v.total%item.packSize} Pcs
+                    </div>`).join('');
 
-                div.innerHTML = `<div class="flex justify-between"><div><h4 class="font-bold text-white">${item.name}</h4><p class="text-[10px] text-slate-500">SKU: ${item.sku}</p></div><div class="text-right"><span class="font-extrabold text-amber-400">${qtyStr}</span></div></div>${varsStr}<button onclick="removeProduct('${key}')" class="absolute -top-1 -right-1 bg-slate-950 text-slate-500 w-5 h-5 rounded-full flex items-center justify-center border border-slate-800">×</button>`;
+                div.innerHTML = `
+                    <div class="flex justify-between items-start pr-5">
+                        <div>
+                            <h4 class="font-bold text-white">${item.name}</h4>
+                            <p class="text-[10px] text-slate-500">SKU: ${item.sku}</p>
+                        </div>
+                        <div class="text-right">
+                            <span class="font-extrabold text-amber-400">${qtyStr}</span>
+                        </div>
+                    </div>
+                    ${varsStr}
+                    <button onclick="removeProduct('${key}')" class="absolute top-2 right-2 bg-slate-950 text-slate-500 hover:text-white w-5 h-5 rounded-full flex items-center justify-center border border-slate-800 text-sm transition">×</button>`;
                 container.appendChild(div);
             });
         }
 
-        function removeProduct(key) { delete order[key]; saveState(); renderProducts(); updateOrderSummary(); }
-        function clearOrder() { if (confirm("Clear order?")) { order = {}; saveState(); renderProducts(); updateOrderSummary(); } }
-        function saveState() { localStorage.setItem('pso_active_order', JSON.stringify(order)); }
-
-        // Camera Barcode System
-        function toggleScanner() {
-            const container = document.getElementById('scanner-container');
-            if (isScannerActive) { stopScanner(); container.classList.add('hidden'); }
-            else { container.classList.remove('hidden'); startScanner(); }
+        function removeProduct(key) {
+            delete order[key];
+            saveState();
+            renderProducts();
+            updateOrderSummary();
         }
 
-        function startScanner() {
-            isScannerActive = true;
-            barcodeScanner = new Html5Qrcode("interactive-reader");
-            barcodeScanner.start({ facingMode: "environment" }, { fps: 10, qrbox: { width: 250, height: 120 } }, (text) => {
-                stopScanner(); document.getElementById('scanner-container').classList.add('hidden');
-                processBarcode(text);
-            }, () => {});
-        }
-
-        function stopScanner() {
-            isScannerActive = false;
-            if (barcodeScanner) barcodeScanner.stop().then(() => { document.getElementById('interactive-reader').innerHTML = ""; });
-        }
-
-        function processBarcode(barcode) {
-            let matched = products.find(p => p.barcode === barcode) || products.find(p => barcodeMap[barcode] === p.id);
-            if (matched) {
-                updateProductTotal(matched, (order[matched.id]?.total || 0) + 1);
-                renderProducts(); alert(`Added: ${matched.name} (+1 Pcs)`);
-            } else {
-                document.getElementById('scanned-barcode-value').innerText = barcode;
-                document.getElementById('barcode-assoc-modal').classList.remove('hidden');
+        function clearOrder() {
+            if (confirm("Are you sure you want to clear the entire order?")) {
+                order = {};
+                saveState();
+                renderProducts();
+                updateOrderSummary();
             }
         }
-
-        function populateBarcodeDropdown() {
-            const select = document.getElementById('barcode-product-select');
-            select.innerHTML = '<option value="">-- Choose Product --</option>';
-            products.forEach(p => { select.innerHTML += `<option value="${p.id}">[SKU: ${p.sku}] ${p.name}</option>`; });
-        }
-
-        function saveBarcodeAssociation() {
-            const barcode = document.getElementById('scanned-barcode-value').innerText;
-            const id = document.getElementById('barcode-product-select').value;
-            if (id) {
-                barcodeMap[barcode] = id;
-                localStorage.setItem('pso_barcode_map', JSON.stringify(barcodeMap));
-                closeBarcodeModal(); renderProducts(); processBarcode(barcode);
-            }
-        }
-
-        function closeBarcodeModal() { document.getElementById('barcode-assoc-modal').classList.add('hidden'); }
 
         // Sharing Utilities
         function shareWhatsApp() {
             let keys = Object.keys(order);
-            if (keys.length === 0) return alert("Empty order!");
+            if (keys.length === 0) return alert("Your order is empty!");
             const dealer = document.getElementById('order-dealer-name').value;
             const notes = document.getElementById('order-notes-input').value;
 
-            let msg = `*PURCHASE ORDER - POWERSTYLE LTD*\\nDate: ${new Date().toLocaleDateString()}\\nDealer: ${dealer}\\nNotes: ${notes}\\n----------------------------------\\n`;
+            let msg = `*PURCHASE ORDER - POWERSTYLE LTD*\\nDate: ${new Date().toLocaleDateString()}\\nRef: ${orderRef}\\nSupplier: ${dealer}\\nNotes: ${notes}\\n----------------------------------\\n`;
             keys.forEach((k, idx) => {
                 const item = order[k];
-                msg += `${idx + 1}. *${item.name}* (SKU: ${item.sku})\\n   • Qty: ${Math.floor(item.total/item.packSize)} Box & ${item.total%item.packSize} Pcs\\n`;
-                item.variations.forEach(v => { msg += `     └─ ${v.name}: ${Math.floor(v.total/item.packSize)} Box & ${v.total%item.packSize} Pcs\\n`; });
+                const boxes = Math.floor(item.total / item.packSize);
+                const pcs = item.total % item.packSize;
+                msg += `${idx + 1}. *${item.name}* (SKU: ${item.sku})\\n   • Qty: ${boxes} Box & ${pcs} Pcs\\n`;
+                item.variations.forEach(v => {
+                    msg += `     └─ ${v.name}: ${Math.floor(v.total / item.packSize)} Box & ${v.total % item.packSize} Pcs\\n`;
+                });
             });
             window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`, '_blank');
         }
 
         function shareMail() {
             let keys = Object.keys(order);
-            if (keys.length === 0) return;
+            if (keys.length === 0) return alert("Your order is empty!");
             const dealer = document.getElementById('order-dealer-name').value;
             const notes = document.getElementById('order-notes-input').value;
 
-            let body = `PURCHASE ORDER - POWERSTYLE LTD\\n\\nDealer: ${dealer}\\nNotes: ${notes}\\n============================\\n`;
+            let body = `PURCHASE ORDER - POWERSTYLE LTD\\n\\nDate: ${new Date().toLocaleDateString()}\\nRef: ${orderRef}\\nSupplier: ${dealer}\\nNotes: ${notes}\\n============================\\n\\n`;
             keys.forEach((k, idx) => {
                 const item = order[k];
-                body += `${idx+1}. ${item.name} - SKU: ${item.sku} (${Math.floor(item.total/item.packSize)} Box & ${item.total%item.packSize} Pcs)\\n`;
+                const boxes = Math.floor(item.total / item.packSize);
+                const pcs = item.total % item.packSize;
+                body += `${idx + 1}. ${item.name} - SKU: ${item.sku} (${boxes} Box & ${pcs} Pcs)\\n`;
+                item.variations.forEach(v => {
+                    body += `   └─ ${v.name}: ${Math.floor(v.total / item.packSize)} Box & ${v.total % item.packSize} Pcs\\n`;
+                });
             });
-            window.location.href = `mailto:?subject=Purchase Order&body=${encodeURIComponent(body)}`;
+            window.location.href = `mailto:?subject=Purchase Order ${orderRef}&body=${encodeURIComponent(body)}`;
         }
 
         function exportToPDF() {
             const keys = Object.keys(order);
-            if (keys.length === 0) return alert("Order is empty!");
+            if (keys.length === 0) return alert("Your order is empty!");
             
             document.getElementById('pdf-dealer-title').innerText = `Supplier: ${document.getElementById('order-dealer-name').value}`;
             document.getElementById('pdf-date').innerText = `Date: ${new Date().toLocaleDateString()}`;
@@ -481,21 +710,37 @@
                 const item = order[key];
                 const row = document.createElement('tr');
                 row.className = "border-b border-slate-100";
-                row.innerHTML = `<td class="py-3 px-4 font-bold">${item.name}</td><td class="py-3 px-3">${item.sku}</td><td class="py-3 px-3 text-center">${item.packSize}</td><td class="py-3 px-4 text-right">${Math.floor(item.total/item.packSize)} Box & ${item.total%item.packSize} Pcs</td>`;
+                
+                const boxes = Math.floor(item.total / item.packSize);
+                const pcs = item.total % item.packSize;
+
+                row.innerHTML = `
+                    <td class="py-3 px-4 font-bold text-slate-800">${item.name}</td>
+                    <td class="py-3 px-3 text-slate-600">${item.sku}</td>
+                    <td class="py-3 px-3 text-center text-slate-600">${item.packSize}</td>
+                    <td class="py-3 px-4 text-right font-semibold text-slate-900">${boxes} Box & ${pcs} Pcs</td>`;
                 tbody.appendChild(row);
 
                 item.variations.forEach(v => {
                     const vRow = document.createElement('tr');
                     vRow.className = "bg-slate-50 text-xs text-slate-500 italic";
-                    vRow.innerHTML = `<td class="py-1 px-8">└─ ${v.name}</td><td></td><td></td><td class="py-1 px-4 text-right">${Math.floor(v.total/item.packSize)} Box & ${v.total%item.packSize} Pcs</td>`;
+                    vRow.innerHTML = `
+                        <td class="py-1.5 px-8">└─ ${v.name}</td>
+                        <td></td>
+                        <td></td>
+                        <td class="py-1.5 px-4 text-right">${Math.floor(v.total / item.packSize)} Box & ${v.total % item.packSize} Pcs</td>`;
                     tbody.appendChild(vRow);
                 });
             });
 
-            html2pdf().set({ margin: 10, filename: `PO_${orderRef}.pdf`, html2canvas: { scale: 2 }, jsPDF: { format: 'a4' } }).from(document.getElementById('pdf-print-template')).save();
+            html2pdf().set({
+                margin: 10,
+                filename: `PO_${orderRef}.pdf`,
+                image: { type: 'jpeg', quality: 0.98 },
+                html2canvas: { scale: 2, logging: false },
+                jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+            }).from(document.getElementById('pdf-print-template')).save();
         }
-
-        function scrollToOrderSheet() { document.getElementById('order-items-container').scrollIntoView({ behavior: 'smooth' }); }
     </script>
 </body>
 </html>
