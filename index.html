@@ -3,21 +3,36 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Powerstyle-0rder | Professional Barber Inventory</title>
+    <title>Powerstyle-0rder | Barber & Grooming Order Hub</title>
 
-    <!-- Tailwind CSS & Icons -->
+    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght=300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <!-- FontAwesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
-    <!-- PDF & Barcode Libraries -->
+    <!-- html2pdf.js for Client-side PDF Generation -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+
+    <!-- html5-qrcode for Camera Barcode Scanning -->
     <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
 
     <style>
-        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #0f172a; color: #f8fafc; }
-        .no-scrollbar::-webkit-scrollbar { display: none; }
-        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: #0f172a;
+            color: #f8fafc;
+        }
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
     </style>
 </head>
 <body class="min-h-screen flex flex-col antialiased pb-20 md:pb-0">
@@ -26,9 +41,10 @@
     <header class="bg-slate-950 border-b border-slate-800 sticky top-0 z-40 px-4 py-3 shadow-xl">
         <div class="max-w-7xl mx-auto flex items-center justify-between">
             <div class="flex items-center space-x-3">
-                <div class="relative w-12 h-12 rounded-xl bg-white border border-slate-800 flex items-center justify-center overflow-hidden shadow-lg" style="min-width: 48px;">
-                    <img src="logo.jpg" id="app-logo-img" alt="Logo" class="w-full h-full object-contain" onerror="this.style.display='none'; document.getElementById('app-logo-fallback').style.display='flex';">
-                    <div id="app-logo-fallback" class="hidden absolute inset-0 bg-gradient-to-tr from-amber-500 to-yellow-400 items-center justify-center">
+                <!-- Brand Logo (Custom image or fallback SVG) -->
+                <div class="relative w-12 h-12 flex items-center justify-center">
+                    <img id="header-logo-img" src="./logo.jpg" alt="Logo" class="w-12 h-12 object-contain rounded-lg" onerror="this.style.display='none'; document.getElementById('header-logo-fallback').style.display='flex';">
+                    <div id="header-logo-fallback" class="hidden w-10 h-10 rounded-xl bg-gradient-to-tr from-amber-500 to-yellow-400 flex items-center justify-center shadow-lg shadow-amber-500/20">
                         <i class="fa-solid fa-scissors text-slate-950 text-xl"></i>
                     </div>
                 </div>
@@ -36,110 +52,185 @@
                     <h1 class="text-lg font-extrabold tracking-tight text-white flex items-center">
                         Powerstyle<span class="text-amber-400 font-light">-0rder</span>
                     </h1>
-                    <p class="text-xs text-slate-400">Professional Barber Product Order Hub</p>
+                    <div class="flex items-center space-x-1.5">
+                        <p class="text-xs text-slate-400">Professional Barber Product Order Hub</p>
+                        <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" title="System Online"></span>
+                    </div>
                 </div>
             </div>
 
             <div class="flex items-center space-x-2">
-                <button onclick="triggerCSVImport()" class="px-3 py-2 bg-slate-900 border border-slate-800 hover:bg-amber-950/40 hover:border-amber-800 text-amber-400 rounded-xl transition duration-200 text-xs font-semibold flex items-center space-x-1" title="Upload CSV Catalog">
-                    <i class="fa-solid fa-file-csv"></i>
-                    <span>Load CSV</span>
+                <!-- Manage Catalog Button -->
+                <button onclick="openCatalogManager()" class="px-3 py-2 bg-slate-900 border border-slate-800 hover:bg-amber-950/40 hover:border-amber-800 text-amber-400 rounded-xl transition duration-200 text-xs font-semibold flex items-center space-x-1.5">
+                    <i class="fa-solid fa-gears text-sm"></i>
+                    <span class="hidden md:inline">Manage Catalog</span>
                 </button>
-                <button onclick="clearOrder()" class="p-2.5 bg-slate-900 border border-slate-800 hover:bg-red-950 border-slate-800 text-slate-400 hover:text-red-400 rounded-xl transition text-sm">
+
+                <!-- CSV Upload Button -->
+                <button onclick="triggerCSVImport()" class="px-3 py-2 bg-slate-900 border border-slate-800 hover:bg-slate-800 hover:border-slate-700 text-slate-300 rounded-xl transition duration-200 text-xs font-semibold flex items-center space-x-1" title="Load custom export_items.csv">
+                    <i class="fa-solid fa-file-csv text-sm"></i>
+                    <span class="hidden sm:inline">Import CSV</span>
+                </button>
+
+                <!-- Clear Cart -->
+                <button onclick="clearOrder()" class="p-2 bg-slate-900 border border-slate-800 hover:bg-red-950/40 hover:border-red-800 text-slate-400 hover:text-red-400 rounded-xl transition duration-200 text-sm" title="Clear Active Order">
                     <i class="fa-solid fa-trash-can"></i>
                 </button>
             </div>
         </div>
     </header>
 
+    <!-- Autosave Notification Bar -->
+    <div class="bg-slate-900/90 border-b border-slate-800 py-1.5 px-4 text-center text-[11px] text-slate-400 flex items-center justify-center space-x-2">
+        <i class="fa-solid fa-cloud-arrow-up text-emerald-500"></i>
+        <span>Active orders are <strong>automatically saved as a draft</strong>. You can safely close your device and resume tomorrow!</span>
+        <span class="bg-emerald-500/10 text-emerald-400 px-1.5 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider">Draft Protected</span>
+    </div>
+
+    <!-- Hidden File Input for CSV Import -->
     <input type="file" id="csv-file-input" class="hidden" accept=".csv" onchange="handleCSVFileSelect(event)">
 
-    <!-- Main Grid -->
+    <!-- Main Content Grid -->
     <main class="flex-grow max-w-7xl w-full mx-auto px-4 py-4 md:py-6 grid grid-cols-1 lg:grid-cols-12 gap-6">
 
-        <!-- Left Column: Products -->
+        <!-- Left Column: Products List & Controls (7 cols) -->
         <section class="lg:col-span-7 flex flex-col space-y-4">
+
+            <!-- Quick Actions & Search -->
             <div class="bg-slate-950 border border-slate-800 rounded-2xl p-4 shadow-lg space-y-3">
                 <div class="flex flex-col sm:flex-row gap-2">
                     <div class="relative flex-grow">
                         <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-slate-500">
                             <i class="fa-solid fa-magnifying-glass"></i>
                         </span>
-                        <input type="text" id="search-input" placeholder="Search products..." class="w-full pl-9 pr-4 py-2.5 bg-slate-900 border border-slate-800 rounded-xl text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-amber-500 text-sm">
+                        <input type="text" id="search-input" placeholder="Search by name, SKU, barcode or category..."
+                            class="w-full pl-9 pr-4 py-2.5 bg-slate-900 border border-slate-800 rounded-xl text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent text-sm">
                     </div>
-                    <button onclick="toggleScanner()" class="px-4 py-2.5 bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold rounded-xl flex items-center justify-center space-x-2 transition shadow-lg shadow-amber-500/10">
-                        <i class="fa-solid fa-camera"></i> <span class="text-xs uppercase tracking-wider">Scan Barcode</span>
+
+                    <button onclick="toggleScanner()" class="px-4 py-2.5 bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold rounded-xl flex items-center justify-center space-x-2 transition duration-200 shadow-lg shadow-amber-500/10">
+                        <i class="fa-solid fa-camera text-sm"></i>
+                        <span class="text-xs uppercase tracking-wider">Scan Barcode</span>
                     </button>
                 </div>
-                <div class="flex space-x-2 overflow-x-auto no-scrollbar py-1" id="category-pills"></div>
+
+                <div class="flex space-x-2 overflow-x-auto no-scrollbar py-1" id="category-pills">
+                    <!-- Dynamic Categories will appear here -->
+                </div>
             </div>
 
-            <!-- Scanner Frame -->
+            <!-- Barcode Scanner Window -->
             <div id="scanner-container" class="hidden bg-slate-950 border border-slate-800 rounded-2xl p-4 shadow-2xl relative">
-                <button onclick="toggleScanner()" class="absolute top-3 right-3 text-slate-400 hover:text-white z-10 p-2 rounded-full bg-slate-900">
+                <button onclick="toggleScanner()" class="absolute top-3 right-3 text-slate-400 hover:text-white z-10 p-2 rounded-full bg-slate-900 border border-slate-800">
                     <i class="fa-solid fa-xmark"></i>
                 </button>
+                <h3 class="text-sm font-semibold mb-3 text-amber-400 flex items-center">
+                    <i class="fa-solid fa-barcode mr-2"></i> Camera Barcode Scanner
+                </h3>
                 <div id="interactive-reader" class="w-full bg-black rounded-xl overflow-hidden border border-slate-800"></div>
+                <div class="mt-3 text-xs text-slate-400 text-center">
+                    Align the product barcode within the camera viewfinder to scan.
+                </div>
             </div>
 
-            <!-- Custom Barcode Mapping Dialog -->
+            <!-- Custom Barcode Association Dialog -->
             <div id="barcode-assoc-modal" class="hidden bg-amber-950/20 border border-amber-800 rounded-2xl p-4 shadow-xl space-y-3">
                 <div class="flex items-center justify-between">
-                    <h3 class="text-sm font-bold text-amber-400"><i class="fa-solid fa-circle-exclamation mr-2"></i>Link Unknown Barcode</h3>
-                    <button onclick="closeBarcodeModal()" class="text-slate-400"><i class="fa-solid fa-xmark"></i></button>
+                    <h3 class="text-sm font-bold text-amber-400 flex items-center">
+                        <i class="fa-solid fa-circle-exclamation mr-2"></i> Unknown Barcode Detected!
+                    </h3>
+                    <button onclick="closeBarcodeModal()" class="text-slate-400 hover:text-white">
+                        <i class="fa-solid fa-xmark"></i>
+                    </button>
                 </div>
-                <p class="text-xs">Scanned Barcode: <strong class="text-white select-all" id="scanned-barcode-value"></strong></p>
-                <select id="barcode-product-select" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-sm text-white"></select>
-                <div class="flex justify-end space-x-2">
-                    <button onclick="saveBarcodeAssociation()" class="px-4 py-1.5 bg-amber-500 hover:bg-amber-400 text-slate-950 font-semibold text-xs rounded-lg transition">Link & Add</button>
+                <p class="text-xs text-slate-300">
+                    Scanned Barcode: <strong class="text-white select-all" id="scanned-barcode-value"></strong>
+                </p>
+                <div class="space-y-2">
+                    <label class="block text-xs text-slate-400">Select which product this barcode belongs to:</label>
+                    <select id="barcode-product-select" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:ring-1 focus:ring-amber-500">
+                        <!-- Dynamic Options -->
+                    </select>
+                </div>
+                <div class="flex justify-end space-x-2 pt-2">
+                    <button onclick="closeBarcodeModal()" class="px-3 py-1.5 bg-slate-900 hover:bg-slate-800 border border-slate-800 text-xs rounded-lg text-slate-300 transition">
+                        Cancel
+                    </button>
+                    <button onclick="saveBarcodeAssociation()" class="px-4 py-1.5 bg-amber-500 hover:bg-amber-400 text-slate-950 font-semibold text-xs rounded-lg transition">
+                        Link & Add to Order
+                    </button>
                 </div>
             </div>
 
             <div class="flex items-center justify-between px-1">
-                <span class="text-xs text-slate-400" id="product-count-display">Showing 0 products</span>
+                <span class="text-xs text-slate-400" id="product-count-display">No catalog loaded yet.</span>
             </div>
 
+            <!-- Products List Container -->
             <div class="flex-grow overflow-y-auto max-h-[60vh] lg:max-h-[70vh] space-y-3 pr-1" id="products-list-container">
-                <!-- Products will be dynamically populated -->
+                <!-- Loaded dynamically -->
             </div>
+
         </section>
 
-        <!-- Right Column: Order Sheet -->
+        <!-- Right Column: Order Sheet Panel (5 cols) -->
         <section class="lg:col-span-5 flex flex-col space-y-4">
+
             <div class="bg-slate-950 border border-slate-800 rounded-2xl shadow-xl flex flex-col sticky top-24 max-h-[85vh]">
+
                 <div class="p-4 border-b border-slate-800 flex items-center justify-between bg-slate-950/80 rounded-t-2xl">
                     <div class="flex items-center space-x-2">
                         <div class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></div>
                         <h2 class="text-sm font-extrabold tracking-wider uppercase text-white">Active Order Sheet</h2>
                     </div>
-                    <span class="bg-slate-900 border border-slate-800 px-2.5 py-1 rounded-lg text-xs text-slate-300">Total: <strong class="text-amber-400" id="cart-unique-count">0</strong></span>
+                    <div class="bg-slate-900 border border-slate-800 px-2.5 py-1 rounded-lg text-xs text-slate-300">
+                        Items: <strong class="text-amber-400" id="cart-unique-count">0</strong>
+                    </div>
                 </div>
 
-                <div class="flex-grow overflow-y-auto p-4 space-y-3 min-h-[150px] max-h-[45vh]" id="order-items-container"></div>
+                <div class="flex-grow overflow-y-auto p-4 space-y-3 min-h-[200px] max-h-[45vh]" id="order-items-container">
+                    <!-- Loaded dynamically -->
+                </div>
 
-                <!-- Footer Tools -->
                 <div class="p-4 border-t border-slate-800 bg-slate-950/90 rounded-b-2xl space-y-3">
+
                     <div class="grid grid-cols-2 gap-2 text-xs">
                         <div>
                             <label class="block text-slate-500 mb-1">Supplier / Dealer</label>
-                            <input type="text" id="order-dealer-name" placeholder="Dealer Name" value="Powerstyle Ltd" class="w-full bg-slate-900 border border-slate-800 rounded-lg px-2.5 py-1.5 text-white focus:outline-none">
+                            <input type="text" id="order-dealer-name" placeholder="Supplier Name" value="Powerstyle Ltd"
+                                class="w-full bg-slate-900 border border-slate-800 rounded-lg px-2.5 py-1.5 text-white focus:outline-none focus:ring-1 focus:ring-amber-500">
                         </div>
                         <div>
                             <label class="block text-slate-500 mb-1">Order Notes</label>
-                            <input type="text" id="order-notes-input" placeholder="Notes (Optional)" class="w-full bg-slate-900 border border-slate-800 rounded-lg px-2.5 py-1.5 text-white focus:outline-none">
+                            <input type="text" id="order-notes-input" placeholder="Urgent, Ship together, etc."
+                                class="w-full bg-slate-900 border border-slate-800 rounded-lg px-2.5 py-1.5 text-white focus:outline-none focus:ring-1 focus:ring-amber-500">
                         </div>
                     </div>
-                    <div class="grid grid-cols-3 gap-2 pt-2 text-xs uppercase font-extrabold">
-                        <button onclick="exportToPDF()" class="py-2.5 bg-red-600 hover:bg-red-500 text-white rounded-xl flex items-center justify-center space-x-1"><i class="fa-solid fa-file-pdf"></i><span>PDF</span></button>
-                        <button onclick="shareWhatsApp()" class="py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl flex items-center justify-center space-x-1"><i class="fa-brands fa-whatsapp text-lg"></i><span>WhatsApp</span></button>
-                        <button onclick="shareMail()" class="py-2.5 bg-blue-600 hover:bg-blue-500 text-white rounded-xl flex items-center justify-center space-x-1"><i class="fa-solid fa-envelope"></i><span>Mail</span></button>
+
+                    <div class="grid grid-cols-3 gap-2 pt-2">
+                        <button onclick="exportToPDF()" class="py-2.5 bg-gradient-to-r from-red-600 to-red-500 hover:from-red-500 hover:to-red-400 text-white font-bold rounded-xl flex items-center justify-center space-x-1.5 transition text-xs uppercase tracking-wider">
+                            <i class="fa-solid fa-file-pdf text-sm"></i>
+                            <span>PDF</span>
+                        </button>
+
+                        <button onclick="shareWhatsApp()" class="py-2.5 bg-gradient-to-r from-emerald-600 to-emerald-500 hover:from-emerald-500 hover:to-emerald-400 text-white font-bold rounded-xl flex items-center justify-center space-x-1.5 transition text-xs uppercase tracking-wider">
+                            <i class="fa-brands fa-whatsapp text-sm"></i>
+                            <span>WhatsApp</span>
+                        </button>
+
+                        <button onclick="shareMail()" class="py-2.5 bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-500 hover:to-blue-400 text-white font-bold rounded-xl flex items-center justify-center space-x-1.5 transition text-xs uppercase tracking-wider">
+                            <i class="fa-solid fa-envelope text-sm"></i>
+                            <span>Email</span>
+                        </button>
                     </div>
                 </div>
+
             </div>
+
         </section>
+
     </main>
 
-    <!-- Mobile Floating Bar -->
+    <!-- Mobile Navigation / Footer Drawer helper -->
     <div class="lg:hidden fixed bottom-0 inset-x-0 bg-slate-950 border-t border-slate-800 px-4 py-3 z-30 flex items-center justify-between shadow-2xl">
         <div class="flex items-center space-x-3">
             <div class="relative">
@@ -149,31 +240,142 @@
                 <span id="mobile-cart-badge" class="absolute -top-1.5 -right-1.5 bg-amber-500 text-slate-950 text-xxs font-extrabold rounded-full px-1.5 min-w-[18px] text-center border-2 border-slate-950">0</span>
             </div>
             <div>
-                <p class="text-xs text-slate-400">Active Order</p>
+                <p class="text-xs text-slate-400">Draft Order</p>
                 <p class="text-sm font-bold text-white" id="mobile-cart-summary">0 Products Selected</p>
             </div>
         </div>
+
         <button onclick="scrollToOrderSheet()" class="px-4 py-2 bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold rounded-xl text-xs uppercase tracking-wider transition">
-            View Sheet
+            View Order Sheet
         </button>
     </div>
 
-    <!-- Hidden PDF Template -->
-    <div class="hidden">
+    <!-- CATALOG MANAGER MODAL (Add / Edit / Delete Products directly) -->
+    <div id="catalog-manager-modal" class="hidden fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-4">
+        <div class="bg-slate-900 border border-slate-800 rounded-3xl p-6 max-w-4xl w-full max-h-[90vh] flex flex-col shadow-2xl overflow-hidden">
+
+            <div class="flex justify-between items-center pb-4 border-b border-slate-800">
+                <div class="flex items-center space-x-2 text-amber-400">
+                    <i class="fa-solid fa-gears text-xl"></i>
+                    <h2 class="text-lg font-bold text-white">Catalog Product Manager</h2>
+                </div>
+                <button onclick="closeCatalogManager()" class="text-slate-400 hover:text-white p-1 rounded-lg bg-slate-950 border border-slate-800 transition">
+                    <i class="fa-solid fa-xmark text-lg"></i>
+                </button>
+            </div>
+
+            <!-- Form: Add or Edit Product -->
+            <div class="py-4 border-b border-slate-800">
+                <h3 id="form-title" class="text-xs font-bold uppercase tracking-wider text-amber-500 mb-3 flex items-center">
+                    <i class="fa-solid fa-circle-plus mr-1.5"></i> Add New Product
+                </h3>
+                <form id="product-form" onsubmit="saveProductForm(event)" class="grid grid-cols-1 md:grid-cols-5 gap-3 text-xs">
+                    <input type="hidden" id="form-product-id">
+
+                    <div class="md:col-span-2">
+                        <label class="block text-slate-400 mb-1">Product Name *</label>
+                        <input type="text" id="form-product-name" required placeholder="e.g. TSF Shaving Gel 1000ml" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-2.5 py-2 text-white">
+                    </div>
+
+                    <div>
+                        <label class="block text-slate-400 mb-1">SKU (Unique Code) *</label>
+                        <input type="text" id="form-product-sku" required placeholder="e.g. 1155" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-2.5 py-2 text-white">
+                    </div>
+
+                    <div>
+                        <label class="block text-slate-400 mb-1">Category *</label>
+                        <select id="form-product-category" required class="w-full bg-slate-950 border border-slate-800 rounded-lg px-2.5 py-2 text-white">
+                            <option value="HAIR PRODUCTS">HAIR PRODUCTS</option>
+                            <option value="SHAVING">SHAVING</option>
+                            <option value="MACHINES">MACHINES</option>
+                            <option value="SPARE PARTS">SPARE PARTS</option>
+                            <option value="ACCESSORIES">ACCESSORIES</option>
+                            <option value="SKIN CARE">SKIN CARE</option>
+                            <option value="DISENFECTANTS">DISENFECTANTS</option>
+                            <option value="COMB/BRUSHES">COMB/BRUSHES</option>
+                            <option value="SCISSORS">SCISSORS</option>
+                            <option value="BEARD PRODUCTS">BEARD PRODUCTS</option>
+                            <option value="DISPOSABLES">DISPOSABLES</option>
+                            <option value="Uncategorized">Uncategorized</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label class="block text-slate-400 mb-1">Pack Size (Box Count) *</label>
+                        <input type="number" id="form-product-packsize" required min="1" placeholder="12" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-2.5 py-2 text-white">
+                    </div>
+
+                    <div class="md:col-span-2">
+                        <label class="block text-slate-400 mb-1">Barcode (Optional)</label>
+                        <input type="text" id="form-product-barcode" placeholder="Optional barcode scan" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-2.5 py-2 text-white">
+                    </div>
+
+                    <div class="md:col-span-1">
+                        <label class="block text-slate-400 mb-1">Sub-Variations?</label>
+                        <select id="form-product-has-vars" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-2.5 py-2 text-white" onchange="toggleFormVarsDisplay()">
+                            <option value="no">No Variations</option>
+                            <option value="yes">Sapphire, Cristal, Golden</option>
+                        </select>
+                    </div>
+
+                    <div class="md:col-span-2 flex items-end space-x-2 pt-1">
+                        <button type="submit" id="form-submit-btn" class="flex-grow py-2 bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold rounded-lg transition duration-200">
+                            Add Product
+                        </button>
+                        <button type="button" onclick="cancelFormEdit()" id="form-cancel-btn" class="hidden px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-lg transition duration-200">
+                            Cancel
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Manage Table Area -->
+            <div class="flex-grow overflow-hidden flex flex-col py-4">
+                <div class="flex justify-between items-center mb-3">
+                    <h3 class="text-xs font-bold text-slate-400 uppercase tracking-wider">Product Catalog List</h3>
+                    <div class="flex space-x-2">
+                        <input type="text" id="manager-search" placeholder="Filter manager products..." oninput="renderManagerTable()"
+                            class="bg-slate-950 border border-slate-800 rounded-lg px-2 py-1 text-xs text-white focus:outline-none">
+                        <button onclick="resetCatalogToDefault()" class="px-2 py-1 bg-red-950/40 hover:bg-red-950 border border-red-800 text-red-400 text-xs rounded-lg transition">
+                            <i class="fa-solid fa-rotate-left mr-1"></i>Reset to Default (225 items)
+                        </button>
+                    </div>
+                </div>
+
+                <div class="flex-grow overflow-y-auto border border-slate-800 rounded-xl bg-slate-950/40">
+                    <table class="w-full text-xs text-left border-collapse">
+                        <thead class="bg-slate-950 text-slate-400 uppercase text-[10px] sticky top-0 border-b border-slate-800">
+                            <tr>
+                                <th class="p-3">Product Name</th>
+                                <th class="p-3">SKU</th>
+                                <th class="p-3">Category</th>
+                                <th class="p-3 text-center">Pack Size</th>
+                                <th class="p-3 text-center">Barcode</th>
+                                <th class="p-3 text-right">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="manager-table-body" class="divide-y divide-slate-800/60">
+                            <!-- Dynamic rows loaded here -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Hidden PDF Printing Canvas (Screen offset so mobile renders it perfectly) -->
+    <div style="position: fixed; left: -9999px; top: 0;">
         <div id="pdf-print-template" style="width: 680px; padding: 24px; font-family: 'Plus Jakarta Sans', sans-serif; background-color: white; color: #1e293b; box-sizing: border-box;">
             <!-- Header with logo and details -->
             <div style="border-bottom: 2px solid #0f172a; padding-bottom: 20px; margin-bottom: 20px;">
                 <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
                     <div style="display: flex; align-items: center;">
-                        <div style="width: 60px; height: 60px; background-color: white; border: 1px solid #e2e8f0; border-radius: 8px; display: flex; align-items: center; justify-content: center; margin-right: 12px; float: left; overflow: hidden; position: relative;">
-                            <img src="logo.jpg" alt="Logo" style="max-width: 100%; max-height: 100%; object-fit: contain;" onerror="this.style.display='none'; document.getElementById('pdf-logo-fallback').style.display='flex';">
-                            <div id="pdf-logo-fallback" style="display: none; position: absolute; inset: 0; background: linear-gradient(135deg, #f59e0b, #facc15); align-items: center; justify-content: center;">
-                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#0f172a" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="margin-top: 18px; margin-left: 18px;">
-                                    <circle cx="6" cy="6" r="3"></circle>
-                                    <circle cx="6" cy="18" r="3"></circle>
-                                    <line x1="9.8" y1="8.2" x2="20" y2="18.4"></line>
-                                    <line x1="20" y1="5.6" x2="9.8" y2="15.8"></line>
-                                </svg>
+                        <!-- Logo (tries to render same logo.jpg as website header) -->
+                        <div style="float: left; margin-right: 12px;">
+                            <img id="pdf-logo-img" src="./logo.jpg" alt="POWER style." style="max-height: 44px; display: block;" onerror="this.style.display='none'; document.getElementById('pdf-logo-fallback').style.display='block';">
+                            <div id="pdf-logo-fallback" style="display: none; width: 44px; height: 44px; background: linear-gradient(135deg, #f59e0b, #facc15); border-radius: 10px; text-align: center; line-height: 44px;">
+                                <span style="font-size: 20px; color: #0f172a;">✂</span>
                             </div>
                         </div>
                         <div style="float: left;">
@@ -236,13 +438,15 @@
         </div>
     </div>
 
+    <!-- Core Script Logic -->
     <script>
         let currentCategory = 'ALL';
         let searchQuery = '';
         let barcodeScanner = null;
         let isScannerActive = false;
 
-        let products = JSON.parse(localStorage.getItem('pso_catalog_products')) || [
+        // Load default DB or user-saved DB
+        const DEFAULT_CATALOG = [
   {
     "id": "1005",
     "name": "Andis Cool Care",
@@ -2308,9 +2512,15 @@
     "variations": []
   }
 ];
+
+        let products = JSON.parse(localStorage.getItem('pso_catalog_products'));
+        if (!products || products.length === 0) {
+            products = [...DEFAULT_CATALOG];
+            localStorage.setItem('pso_catalog_products', JSON.stringify(products));
+        }
+
         let order = JSON.parse(localStorage.getItem('pso_active_order')) || {};
         let barcodeMap = JSON.parse(localStorage.getItem('pso_barcode_map')) || {};
-        let customVariations = JSON.parse(localStorage.getItem('pso_custom_variations')) || {};
         let orderRef = localStorage.getItem('pso_ref') || '#PSO-' + Math.floor(100000 + Math.random() * 900000);
 
         localStorage.setItem('pso_ref', orderRef);
@@ -2326,6 +2536,12 @@
         // Formats quantities dynamically: E.g., "1 Box", "12 Pcs", "1 Box & 2 Pcs", "2 Boxes"
         function formatQty(total, packSize) {
             if (total <= 0) return "0 Pcs";
+
+            // Special Case: if pack size is 1, boxes and pieces are the same, just return pcs
+            if (packSize === 1) {
+                return total === 1 ? "1 Pc" : `${total} Pcs`;
+            }
+
             const boxes = Math.floor(total / packSize);
             const pcs = total % packSize;
 
@@ -2430,9 +2646,6 @@
         }
 
         function initCatalogUI() {
-            products.forEach(p => {
-                if (customVariations[p.id]) p.variations = customVariations[p.id];
-            });
             renderCategories();
             renderProducts();
             updateOrderSummary();
@@ -2468,7 +2681,8 @@
             const filtered = products.filter(p => {
                 const matchesCat = currentCategory === 'ALL' || p.category === currentCategory;
                 const matchesSearch = p.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                                      p.sku.toLowerCase().includes(searchQuery.toLowerCase());
+                                      p.sku.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                                      (p.barcode && p.barcode.includes(searchQuery));
                 return matchesCat && matchesSearch;
             });
 
@@ -2488,7 +2702,7 @@
                         <div>
                             <span class="px-2 py-0.5 bg-slate-900 rounded text-[10px] text-amber-400 font-bold uppercase">${p.category}</span>
                             <h3 class="text-sm font-bold text-white mt-1">${p.name}</h3>
-                            <p class="text-xs text-slate-500">SKU: ${p.sku}</p>
+                            <p class="text-xs text-slate-500">SKU: ${p.sku} ${p.barcode ? '| Barcode: ' + p.barcode : ''}</p>
                         </div>
                         <button onclick="changePackSize('${p.id}')" class="text-xs bg-slate-900 px-2 py-1 rounded border border-slate-800 font-bold text-slate-200" title="Click to change custom box quantity">
                             ${p.packSize} Pcs/Box
@@ -2496,7 +2710,21 @@
                     </div>`;
 
                 let inputsHtml = "";
-                if (!p.variations || p.variations.length === 0) {
+
+                // CRITICAL CORRECTION (2): If Pack Size is 1, only show a single Quantity input to avoid Boxes/Pcs čonflict!
+                if (p.packSize === 1) {
+                    const total = order[p.id] ? order[p.id].total : 0;
+                    inputsHtml = `
+                        <div class="bg-slate-900/50 p-3 rounded-xl flex items-center justify-between">
+                            <span class="text-xs font-semibold text-slate-300">Quantity (Pcs)</span>
+                            <div class="flex items-center space-x-2">
+                                <button onclick="adjustSingleQty('${p.id}', -1)" class="w-8 h-8 rounded bg-slate-900 font-bold hover:bg-slate-800 transition">-</button>
+                                <input type="number" id="single-qty-${p.id}" value="${total}" onchange="onSingleQtyChange('${p.id}')" class="w-14 text-center bg-slate-950 border border-slate-800 rounded py-1 text-xs text-white">
+                                <button onclick="adjustSingleQty('${p.id}', 1)" class="w-8 h-8 rounded bg-slate-900 font-bold hover:bg-slate-800 transition">+</button>
+                            </div>
+                        </div>`;
+                }
+                else if (!p.variations || p.variations.length === 0) {
                     const total = order[p.id] ? order[p.id].total : 0;
                     const boxes = Math.floor(total / p.packSize);
                     const pcs = total % p.packSize;
@@ -2505,17 +2733,17 @@
                             <div class="text-center">
                                 <span class="text-xxs text-slate-400">Boxes</span>
                                 <div class="flex items-center justify-center space-x-1 mt-1">
-                                    <button onclick="adjustBox('${p.id}', -1)" class="w-7 h-7 rounded bg-slate-900 font-bold">-</button>
+                                    <button onclick="adjustBox('${p.id}', -1)" class="w-7 h-7 rounded bg-slate-900 font-bold hover:bg-slate-800 transition">-</button>
                                     <input type="number" id="box-${p.id}" value="${boxes}" onchange="onInputChange('${p.id}')" class="w-10 text-center bg-slate-950 rounded text-xs py-0.5">
-                                    <button onclick="adjustBox('${p.id}', 1)" class="w-7 h-7 rounded bg-slate-900 font-bold">+</button>
+                                    <button onclick="adjustBox('${p.id}', 1)" class="w-7 h-7 rounded bg-slate-900 font-bold hover:bg-slate-800 transition">+</button>
                                 </div>
                             </div>
                             <div class="text-center">
                                 <span class="text-xxs text-slate-400">Pieces</span>
                                 <div class="flex items-center justify-center space-x-1 mt-1">
-                                    <button onclick="adjustPieces('${p.id}', -1)" class="w-7 h-7 rounded bg-slate-900 font-bold">-</button>
+                                    <button onclick="adjustPieces('${p.id}', -1)" class="w-7 h-7 rounded bg-slate-900 font-bold hover:bg-slate-800 transition">-</button>
                                     <input type="number" id="pcs-${p.id}" value="${pcs}" onchange="onInputChange('${p.id}')" class="w-10 text-center bg-slate-950 rounded text-xs py-0.5">
-                                    <button onclick="adjustPieces('${p.id}', 1)" class="w-7 h-7 rounded bg-slate-900 font-bold">+</button>
+                                    <button onclick="adjustPieces('${p.id}', 1)" class="w-7 h-7 rounded bg-slate-900 font-bold hover:bg-slate-800 transition">+</button>
                                 </div>
                             </div>
                         </div>`;
@@ -2551,6 +2779,20 @@
                 card.innerHTML = headerHtml + inputsHtml;
                 container.appendChild(card);
             });
+        }
+
+        // Qty adjustments for Pack Size = 1
+        function adjustSingleQty(id, delta) {
+            const p = products.find(prod => prod.id === id);
+            let current = order[id]?.total || 0;
+            updateProductTotal(p, Math.max(0, current + delta));
+            renderProducts();
+        }
+
+        function onSingleQtyChange(id) {
+            const p = products.find(prod => prod.id === id);
+            const val = parseInt(document.getElementById(`single-qty-${id}`).value) || 0;
+            updateProductTotal(p, Math.max(0, val));
         }
 
         function changePackSize(id) {
@@ -2594,7 +2836,7 @@
             if (total <= 0) {
                 delete order[p.id];
             } else {
-                order[p.id] = { name: p.name, sku: p.sku, packSize: p.packSize, total, variations: [] };
+                order[p.id] = { name: p.name, sku: p.sku, packSize: p.packSize, total, variations: order[p.id]?.variations || [] };
             }
             saveState();
             updateOrderSummary();
@@ -2635,9 +2877,22 @@
             const p = products.find(prod => prod.id === id);
             const name = prompt("Variation name (e.g. Lavender, Lemon):");
             if (name) {
+                if(!p.variations) p.variations = [];
                 p.variations.push({ name, total: 0 });
-                customVariations[id] = p.variations;
-                localStorage.setItem('pso_custom_variations', JSON.stringify(customVariations));
+
+                // Save custom variations globally and persist
+                let customVars = JSON.parse(localStorage.getItem('pso_custom_variations')) || {};
+                customVars[id] = p.variations;
+                localStorage.setItem('pso_custom_variations', JSON.stringify(customVars));
+
+                // Sync to overall catalog list in localStorage
+                let currentCatalogList = JSON.parse(localStorage.getItem('pso_catalog_products')) || [];
+                let catalogProd = currentCatalogList.find(cp => cp.id === id);
+                if (catalogProd) {
+                    catalogProd.variations = p.variations;
+                    localStorage.setItem('pso_catalog_products', JSON.stringify(currentCatalogList));
+                }
+
                 renderProducts();
             }
         }
@@ -2648,10 +2903,14 @@
             const keys = Object.keys(order);
             document.getElementById('cart-unique-count').innerText = keys.length;
 
-            // Update Mobile Summary
-            const totalQuantitySum = keys.reduce((sum, k) => sum + order[k].total, 0);
-            document.getElementById('mobile-cart-badge').innerText = keys.length;
-            document.getElementById('mobile-cart-summary').innerText = `${keys.length} items (${totalQuantitySum} pcs)`;
+            // Set mobile badges
+            const mobileBadge = document.getElementById('mobile-cart-badge');
+            const mobileSummary = document.getElementById('mobile-cart-summary');
+            if (mobileBadge) mobileBadge.innerText = keys.length;
+            if (mobileSummary) {
+                let totalQuantitySum = keys.reduce((acc, k) => acc + (order[k]?.total || 0), 0);
+                mobileSummary.innerText = `${keys.length} items (${totalQuantitySum} pcs)`;
+            }
 
             if (keys.length === 0) {
                 container.innerHTML = `
@@ -2668,6 +2927,7 @@
                 const div = document.createElement('div');
                 div.className = "bg-slate-900 border border-slate-800 rounded-xl p-3 relative space-y-1 text-xs";
 
+                // CRITICAL CORRECTION (1): No more "1 Box & 0 Pcs", use formatQty directly for clean representation
                 let qtyStr = formatQty(item.total, item.packSize);
                 let varsStr = item.variations.map(v => `
                     <div class="pl-3 border-l border-slate-800 text-slate-400 mt-1">
@@ -2782,19 +3042,23 @@
             }
         }
 
-        // Sharing Utilities
+        function closeBarcodeModal() {
+            document.getElementById('barcode-assoc-modal').classList.add('hidden');
+        }
+
+        // Sharing Utilities (WhatsApp, Mail with standard %0D%0A linebreaks for reliability on tablet/phone)
         function shareWhatsApp() {
             let keys = Object.keys(order);
             if (keys.length === 0) return alert("Your order is empty!");
             const dealer = document.getElementById('order-dealer-name').value;
             const notes = document.getElementById('order-notes-input').value;
 
-            let msg = `*PURCHASE ORDER - POWERSTYLE LTD*\\nDate: ${new Date().toLocaleDateString()}\\nRef: ${orderRef}\\nSupplier: ${dealer}\\nNotes: ${notes}\\n----------------------------------\\n`;
+            let msg = `*PURCHASE ORDER - POWERSTYLE LTD*\nDate: ${new Date().toLocaleDateString()}\nRef: ${orderRef}\nSupplier: ${dealer}\nNotes: ${notes}\n----------------------------------\n`;
             keys.forEach((k, idx) => {
                 const item = order[k];
-                msg += `${idx + 1}. *${item.name}*\\n   • Qty: ${formatQty(item.total, item.packSize)}\\n`;
+                msg += `${idx + 1}. *${item.name}*\n   • Qty: ${formatQty(item.total, item.packSize)}\n`;
                 item.variations.forEach(v => {
-                    msg += `     └─ ${v.name}: ${formatQty(v.total, item.packSize)}\\n`;
+                    msg += `     └─ ${v.name}: ${formatQty(v.total, item.packSize)}\n`;
                 });
             });
             window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`, '_blank');
@@ -2806,15 +3070,29 @@
             const dealer = document.getElementById('order-dealer-name').value;
             const notes = document.getElementById('order-notes-input').value;
 
-            let body = `PURCHASE ORDER - POWERSTYLE LTD\\n\\nDate: ${new Date().toLocaleDateString()}\\nRef: ${orderRef}\\nSupplier: ${dealer}\\nNotes: ${notes}\\n============================\\n\\n`;
+            // %0D%0A is the only standard way to force line breaks in mailto URLs across iOS and Android mail clients!
+            let body = "PURCHASE ORDER - POWERSTYLE LTD" + "%0D%0A%0D%0A" +
+                       "Date: " + new Date().toLocaleDateString() + "%0D%0A" +
+                       "Ref: " + orderRef + "%0D%0A" +
+                       "Supplier: " + dealer + "%0D%0A" +
+                       "Notes: " + notes + "%0D%0A" +
+                       "============================" + "%0D%0A%0D%0A";
+
             keys.forEach((k, idx) => {
                 const item = order[k];
-                body += `${idx + 1}. ${item.name} (${formatQty(item.total, item.packSize)})\\n`;
+                body += `${idx + 1}. ${item.name} (${formatQty(item.total, item.packSize)})` + "%0D%0A";
                 item.variations.forEach(v => {
-                    body += `   └─ ${v.name}: ${formatQty(v.total, item.packSize)}\\n`;
+                    body += `   └─ ${v.name}: ${formatQty(v.total, item.packSize)}` + "%0D%0A";
                 });
             });
-            window.location.href = `mailto:?subject=Purchase Order ${orderRef}&body=${encodeURIComponent(body)}`;
+
+            // Programmatic sanal link click to bypass popup blockers on mobile Safaris!
+            const mailtoUrl = `mailto:?subject=Purchase Order ${orderRef}&body=${body}`;
+            const mailLink = document.createElement('a');
+            mailLink.href = mailtoUrl;
+            document.body.appendChild(mailLink);
+            mailLink.click();
+            document.body.removeChild(mailLink);
         }
 
         function exportToPDF() {
@@ -2854,8 +3132,9 @@
                 });
             });
 
+            // html2pdf parameters configured to prevent mobile scaling issue and cutoffs
             html2pdf().set({
-                margin: [10, 10, 10, 10],
+                margin: 12,
                 filename: `PO_${orderRef}.pdf`,
                 image: { type: 'jpeg', quality: 0.98 },
                 html2canvas: { scale: 2, logging: false, useCORS: true },
@@ -2863,8 +3142,165 @@
             }).from(document.getElementById('pdf-print-template')).save();
         }
 
-        function closeBarcodeModal() {
-            document.getElementById('barcode-assoc-modal').classList.add('hidden');
+        function scrollToOrderSheet() {
+            document.getElementById('order-items-container').scrollIntoView({ behavior: 'smooth' });
+        }
+
+
+        // ============================================
+        // CATALOG MANAGER CORE INTERFACE LOGIC (NEW V3)
+        // ============================================
+        function openCatalogManager() {
+            document.getElementById('catalog-manager-modal').classList.remove('hidden');
+            renderManagerTable();
+        }
+
+        function closeCatalogManager() {
+            document.getElementById('catalog-manager-modal').classList.add('hidden');
+            cancelFormEdit();
+        }
+
+        function toggleFormVarsDisplay() {
+            // Can be expanded if custom arbitrary variations are selected
+        }
+
+        function saveProductForm(e) {
+            e.preventDefault();
+            const idInput = document.getElementById('form-product-id').value;
+            const name = document.getElementById('form-product-name').value.strip ? document.getElementById('form-product-name').value.strip() : document.getElementById('form-product-name').value.trim();
+            const sku = document.getElementById('form-product-sku').value.trim();
+            const category = document.getElementById('form-product-category').value;
+            const packSize = parseInt(document.getElementById('form-product-packsize').value) || 12;
+            const barcode = document.getElementById('form-product-barcode').value.trim();
+            const hasVars = document.getElementById('form-product-has-vars').value;
+
+            let variations = [];
+            if (hasVars === 'yes') {
+                variations = [
+                    { name: "Sapphire", total: 0 },
+                    { name: "Cristal", total: 0 },
+                    { name: "Golden", total: 0 }
+                ];
+            }
+
+            if (idInput) {
+                // EDIT MODE
+                const idx = products.findIndex(p => p.id === idInput);
+                if (idx !== -1) {
+                    products[idx].name = name;
+                    products[idx].sku = sku;
+                    products[idx].category = category;
+                    products[idx].packSize = packSize;
+                    products[idx].barcode = barcode;
+                    if (hasVars === 'yes' && (!products[idx].variations || products[idx].variations.length === 0)) {
+                        products[idx].variations = variations;
+                    } else if (hasVars === 'no') {
+                        products[idx].variations = [];
+                    }
+                }
+            } else {
+                // ADD MODE
+                // Check if SKU already exists
+                if (products.some(p => p.sku === sku)) {
+                    alert("This SKU already exists in your catalog!");
+                    return;
+                }
+                const newId = sku || 'id-' + Date.now();
+                products.push({
+                    id: newId,
+                    name,
+                    sku,
+                    category,
+                    barcode,
+                    packSize,
+                    variations
+                });
+            }
+
+            localStorage.setItem('pso_catalog_products', JSON.stringify(products));
+            cancelFormEdit();
+            renderManagerTable();
+            initCatalogUI();
+            alert("Product catalog updated successfully!");
+        }
+
+        function editProductInManager(id) {
+            const p = products.find(prod => prod.id === id);
+            if (!p) return;
+
+            document.getElementById('form-product-id').value = p.id;
+            document.getElementById('form-product-name').value = p.name;
+            document.getElementById('form-product-sku').value = p.sku;
+            document.getElementById('form-product-category').value = p.category;
+            document.getElementById('form-product-packsize').value = p.packSize;
+            document.getElementById('form-product-barcode').value = p.barcode || '';
+            document.getElementById('form-product-has-vars').value = (p.variations && p.variations.length > 0) ? 'yes' : 'no';
+
+            document.getElementById('form-title').innerHTML = '<i class="fa-solid fa-pen-to-square mr-1.5"></i> Edit Product';
+            document.getElementById('form-submit-btn').innerText = 'Save Changes';
+            document.getElementById('form-cancel-btn').classList.remove('hidden');
+        }
+
+        function cancelFormEdit() {
+            document.getElementById('product-form').reset();
+            document.getElementById('form-product-id').value = '';
+            document.getElementById('form-title').innerHTML = '<i class="fa-solid fa-circle-plus mr-1.5"></i> Add New Product';
+            document.getElementById('form-submit-btn').innerText = 'Add Product';
+            document.getElementById('form-cancel-btn').add ? document.getElementById('form-cancel-btn').add('hidden') : document.getElementById('form-cancel-btn').classList.add('hidden');
+        }
+
+        function deleteProductInManager(id) {
+            if (confirm("Are you sure you want to delete this product from the catalog? This will also remove it from any active orders.")) {
+                products = products.filter(p => p.id !== id);
+                delete order[id];
+                localStorage.setItem('pso_catalog_products', JSON.stringify(products));
+                saveState();
+                renderManagerTable();
+                initCatalogUI();
+            }
+        }
+
+        function resetCatalogToDefault() {
+            if (confirm("This will reset your entire catalog back to the original 225 items. Any custom products you added will be removed. Continue?")) {
+                products = [...DEFAULT_CATALOG];
+                localStorage.setItem('pso_catalog_products', JSON.stringify(products));
+                initCatalogUI();
+                renderManagerTable();
+            }
+        }
+
+        function renderManagerTable() {
+            const tbody = document.getElementById('manager-table-body');
+            tbody.innerHTML = '';
+            const search = document.getElementById('manager-search').value.toLowerCase();
+
+            const filtered = products.filter(p =>
+                p.name.toLowerCase().includes(search) ||
+                p.sku.toLowerCase().includes(search) ||
+                p.category.toLowerCase().includes(search) ||
+                (p.barcode && p.barcode.includes(search))
+            );
+
+            filtered.forEach(p => {
+                const tr = document.createElement('tr');
+                tr.className = "border-b border-slate-800/40 hover:bg-slate-900/30";
+                tr.innerHTML = `
+                    <td class="p-3 font-semibold text-slate-200">${p.name}</td>
+                    <td class="p-3 font-mono text-slate-400">${p.sku}</td>
+                    <td class="p-3 text-slate-400">${p.category}</td>
+                    <td class="p-3 text-center font-bold text-amber-500">${p.packSize}</td>
+                    <td class="p-3 text-center font-mono text-slate-500">${p.barcode || '-'}</td>
+                    <td class="p-3 text-right space-x-1.5">
+                        <button onclick="editProductInManager('${p.id}')" class="text-amber-400 hover:text-amber-300 px-2 py-1 rounded bg-amber-500/10 hover:bg-amber-500/20 border border-amber-500/20 transition">
+                            <i class="fa-solid fa-pen-to-square"></i>
+                        </button>
+                        <button onclick="deleteProductInManager('${p.id}')" class="text-red-400 hover:text-red-300 px-2 py-1 rounded bg-red-500/10 hover:bg-red-500/20 border border-red-500/20 transition">
+                            <i class="fa-solid fa-trash"></i>
+                        </button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
         }
     </script>
 </body>
