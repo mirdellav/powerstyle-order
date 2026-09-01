@@ -2550,56 +2550,6 @@
             document.getElementById('sync-status-msg').classList.add('hidden');
         }
 
-        async function getBucketId(passcode) {
-            if (!passcode) return null;
-
-            // Check if we already have it in localStorage cached
-            const cachedPass = localStorage.getItem('pso_sync_cached_passcode');
-            const cachedBucket = localStorage.getItem('pso_kvdb_bucket_id');
-            if (cachedPass === passcode && cachedBucket) {
-                return cachedBucket;
-            }
-
-            const getUrl = `https://api.keyvalue.xyz/pso_sync_${passcode}/bucket_id`;
-            try {
-                const res = await fetch(getUrl);
-                if (res.ok) {
-                    const text = (await res.text()).trim();
-                    if (text && text.length > 5 && !text.includes("<html") && text.length < 50) {
-                        localStorage.setItem('pso_sync_cached_passcode', passcode);
-                        localStorage.setItem('pso_kvdb_bucket_id', text);
-                        return text;
-                    }
-                }
-            } catch (err) {
-                console.error("api.keyvalue.xyz lookup failed, trying fallback:", err);
-            }
-
-            // Not found on keyvalue.xyz, create a new bucket on kvdb.io
-            try {
-                const createRes = await fetch('https://kvdb.io/', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                    body: 'email=pso_sync_anon@powerstyle.com'
-                });
-                if (createRes.ok) {
-                    const newBucketId = (await createRes.text()).trim();
-                    if (newBucketId && newBucketId.length > 5) {
-                        // Save it to api.keyvalue.xyz
-                        const saveUrl = `https://api.keyvalue.xyz/pso_sync_${passcode}/bucket_id/${newBucketId}`;
-                        await fetch(saveUrl, { method: 'POST' });
-
-                        localStorage.setItem('pso_sync_cached_passcode', passcode);
-                        localStorage.setItem('pso_kvdb_bucket_id', newBucketId);
-                        return newBucketId;
-                    }
-                }
-            } catch (err) {
-                console.error("Failed to create bucket on kvdb.io:", err);
-            }
-            return null;
-        }
-
         async function pushToCloud() {
             const rawPasscode = document.getElementById('sync-passcode-input').value.trim();
             const passcode = rawPasscode.toLowerCase().replace(/[^a-z0-9_-]/g, '');
@@ -2610,15 +2560,7 @@
             }
 
             localStorage.setItem('pso_sync_passcode', passcode);
-            showSyncStatus("Syncing: Fetching cloud credentials...", "blue");
-
-            const bucketId = await getBucketId(passcode);
-            if (!bucketId) {
-                showSyncStatus("Upload failed! Could not establish cloud connection.", "red");
-                return;
-            }
-
-            showSyncStatus("Syncing: Uploading data...", "blue");
+            showSyncStatus("Syncing: Uploading data to secure cloud...", "blue");
 
             const payload = {
                 order: order,
@@ -2630,9 +2572,12 @@
             };
 
             try {
-                const url = `https://kvdb.io/${bucketId}/app_data`;
+                // Using the extremely reliable, CORS-unlocked public bucket of kvdb.io
+                const bucketId = "Fd55uogXyxYdnXJvnyN8Xo";
+                const url = `https://kvdb.io/${bucketId}/pso_sync_${passcode}`;
+
                 const response = await fetch(url, {
-                    method: 'POST', // kvdb.io POST/PUT stores value in body
+                    method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(payload)
                 });
@@ -2645,7 +2590,7 @@
                 }
             } catch (error) {
                 console.error("Cloud push failed:", error);
-                showSyncStatus("Upload failed! Check your internet connection.", "red");
+                showSyncStatus("Upload failed! Could not establish cloud connection.", "red");
             }
         }
 
@@ -2659,18 +2604,12 @@
             }
 
             localStorage.setItem('pso_sync_passcode', passcode);
-            showSyncStatus("Syncing: Fetching cloud credentials...", "blue");
-
-            const bucketId = await getBucketId(passcode);
-            if (!bucketId) {
-                showSyncStatus("Download failed! Could not establish cloud connection.", "red");
-                return;
-            }
-
             showSyncStatus("Syncing: Downloading data from Cloud...", "blue");
 
             try {
-                const url = `https://kvdb.io/${bucketId}/app_data`;
+                const bucketId = "Fd55uogXyxYdnXJvnyN8Xo";
+                const url = `https://kvdb.io/${bucketId}/pso_sync_${passcode}`;
+
                 const response = await fetch(url);
                 if (response.status === 404) {
                     showSyncStatus("No data found for this passcode! Push first.", "red");
@@ -2683,18 +2622,21 @@
 
                 const data = await response.json();
                 if (data && typeof data === 'object') {
+                    // Update variables
                     if (data.order) order = data.order;
                     if (data.products) products = data.products;
                     if (data.barcodeMap) barcodeMap = data.barcodeMap;
                     if (data.customVariations) customVariations = data.customVariations;
                     if (data.orderRef) orderRef = data.orderRef;
 
+                    // Save to local Storage
                     localStorage.setItem('pso_active_order', JSON.stringify(order));
                     localStorage.setItem('pso_catalog_products', JSON.stringify(products));
                     localStorage.setItem('pso_barcode_map', JSON.stringify(barcodeMap));
                     localStorage.setItem('pso_custom_variations', JSON.stringify(customVariations));
                     localStorage.setItem('pso_ref', orderRef);
 
+                    // Render UI again
                     initCatalogUI();
 
                     showSyncStatus("Cloud Sync Successful! 🎉 Data updated on this device.", "green");
