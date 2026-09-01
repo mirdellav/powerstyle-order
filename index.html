@@ -41,35 +41,42 @@
     <header class="bg-slate-950 border-b border-slate-800 sticky top-0 z-40 px-4 py-3 shadow-xl">
         <div class="max-w-7xl mx-auto flex items-center justify-between">
             <div class="flex items-center space-x-3">
-                <!-- Brand Logo (Custom image or fallback SVG) -->
-                <div class="relative w-12 h-12 flex items-center justify-center">
-                    <img id="header-logo-img" src="./logo.jpg" alt="Logo" class="w-12 h-12 object-contain rounded-lg" onerror="this.style.display='none'; document.getElementById('header-logo-fallback').style.display='flex';">
-                    <div id="header-logo-fallback" class="hidden w-10 h-10 rounded-xl bg-gradient-to-tr from-amber-500 to-yellow-400 flex items-center justify-center shadow-lg shadow-amber-500/20">
-                        <i class="fa-solid fa-scissors text-slate-950 text-xl"></i>
+                <div class="flex items-center">
+                    <img id="header-logo-image" src="logo.jpg" alt="Logo" class="h-10 w-auto rounded-lg mr-2" onerror="onHeaderLogoError()">
+                    <div id="header-logo-fallback" class="w-10 h-10 rounded-xl bg-gradient-to-tr from-amber-500 to-yellow-400 flex items-center justify-center shadow-lg shadow-amber-500/20 mr-2 hidden">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#0f172a" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="6" cy="6" r="3"></circle>
+                            <circle cx="6" cy="18" r="3"></circle>
+                            <line x1="9.8" y1="8.2" x2="20" y2="18.4"></line>
+                            <line x1="20" y1="5.6" x2="9.8" y2="15.8"></line>
+                        </svg>
                     </div>
                 </div>
                 <div>
                     <h1 class="text-lg font-extrabold tracking-tight text-white flex items-center">
                         Powerstyle<span class="text-amber-400 font-light">-0rder</span>
                     </h1>
-                    <div class="flex items-center space-x-1.5">
-                        <p class="text-xs text-slate-400">Professional Barber Product Order Hub</p>
-                        <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" title="System Online"></span>
-                    </div>
+                    <p class="text-xs text-slate-400">Professional Barber Product Order Hub</p>
                 </div>
             </div>
 
-            <div class="flex items-center space-x-2">
-                <!-- Manage Catalog Button -->
-                <button onclick="openCatalogManager()" class="px-3 py-2 bg-slate-900 border border-slate-800 hover:bg-amber-950/40 hover:border-amber-800 text-amber-400 rounded-xl transition duration-200 text-xs font-semibold flex items-center space-x-1.5">
-                    <i class="fa-solid fa-gears text-sm"></i>
-                    <span class="hidden md:inline">Manage Catalog</span>
+            <div class="flex items-center space-x-1.5 sm:space-x-2">
+                <!-- Cloud Sync Button -->
+                <button onclick="toggleSyncModal()" class="px-2.5 py-2 bg-slate-900 border border-slate-800 hover:bg-blue-950/40 hover:border-blue-800 text-blue-400 rounded-xl transition duration-200 text-xs font-semibold flex items-center space-x-1" title="Cloud Sync Room">
+                    <i class="fa-solid fa-cloud animate-pulse"></i>
+                    <span class="hidden sm:inline">Sync Cloud</span>
                 </button>
 
                 <!-- CSV Upload Button -->
-                <button onclick="triggerCSVImport()" class="px-3 py-2 bg-slate-900 border border-slate-800 hover:bg-slate-800 hover:border-slate-700 text-slate-300 rounded-xl transition duration-200 text-xs font-semibold flex items-center space-x-1" title="Load custom export_items.csv">
-                    <i class="fa-solid fa-file-csv text-sm"></i>
-                    <span class="hidden sm:inline">Import CSV</span>
+                <button onclick="triggerCSVImport()" class="px-2.5 py-2 bg-slate-900 border border-slate-800 hover:bg-amber-950/40 hover:border-amber-800 text-amber-400 rounded-xl transition duration-200 text-xs font-semibold flex items-center space-x-1" title="Upload CSV Catalog">
+                    <i class="fa-solid fa-file-csv"></i>
+                    <span class="hidden sm:inline">Load CSV</span>
+                </button>
+
+                <!-- Manage Catalog Button -->
+                <button onclick="toggleCatalogModal()" class="px-2.5 py-2 bg-slate-900 border border-slate-800 hover:bg-purple-950/40 hover:border-purple-800 text-purple-400 rounded-xl transition duration-200 text-xs font-semibold flex items-center space-x-1" title="Edit, Add, Delete Products">
+                    <i class="fa-solid fa-folder-gear"></i>
+                    <span class="hidden sm:inline">Catalog</span>
                 </button>
 
                 <!-- Clear Cart -->
@@ -80,20 +87,55 @@
         </div>
     </header>
 
-    <!-- Autosave Notification Bar -->
-    <div class="bg-slate-900/90 border-b border-slate-800 py-1.5 px-4 text-center text-[11px] text-slate-400 flex items-center justify-center space-x-2">
-        <i class="fa-solid fa-cloud-arrow-up text-emerald-500"></i>
-        <span>Active orders are <strong>automatically saved as a draft</strong>. You can safely close your device and resume tomorrow!</span>
-        <span class="bg-emerald-500/10 text-emerald-400 px-1.5 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider">Draft Protected</span>
-    </div>
-
     <!-- Hidden File Input for CSV Import -->
     <input type="file" id="csv-file-input" class="hidden" accept=".csv" onchange="handleCSVFileSelect(event)">
+
+    <!-- Cloud Sync Modal -->
+    <div id="sync-modal" class="hidden fixed inset-0 z-50 bg-slate-950/80 flex items-center justify-center p-4">
+        <div class="bg-slate-900 border border-slate-800 rounded-3xl p-6 max-w-md w-full space-y-4 shadow-2xl relative">
+            <button onclick="toggleSyncModal()" class="absolute top-4 right-4 text-slate-400 hover:text-white">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+            <div class="text-center pb-2">
+                <div class="w-12 h-12 bg-blue-500/10 text-blue-400 rounded-xl flex items-center justify-center mx-auto text-2xl mb-2">
+                    <i class="fa-solid fa-cloud-arrow-up animate-bounce"></i>
+                </div>
+                <h3 class="text-lg font-bold text-white">Cross-Device Cloud Sync</h3>
+                <p class="text-xs text-slate-400 mt-1">Synchronize your order sheet and custom catalog across MacBook, iPad, and iPhone instantly.</p>
+            </div>
+
+            <div class="space-y-2">
+                <label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider">Sync Passcode (Secret Room Name)</label>
+                <input type="text" id="sync-passcode-input" placeholder="e.g. powerstyle-depo"
+                    class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2.5 text-white placeholder-slate-600 focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm font-bold text-center">
+                <p class="text-[10px] text-slate-500">Enter a memorable secret passcode. Use the exact same passcode on all your devices to share data.</p>
+            </div>
+
+            <div class="grid grid-cols-2 gap-3 pt-2">
+                <button onclick="pushToCloud()" class="py-3 bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-500 hover:to-blue-400 text-white font-bold rounded-xl text-xs uppercase tracking-wider transition flex items-center justify-center space-x-1">
+                    <i class="fa-solid fa-cloud-arrow-up text-sm"></i>
+                    <span>Push (Upload)</span>
+                </button>
+                <button onclick="pullFromCloud()" class="py-3 bg-gradient-to-r from-emerald-600 to-emerald-500 hover:from-emerald-500 hover:to-emerald-400 text-white font-bold rounded-xl text-xs uppercase tracking-wider transition flex items-center justify-center space-x-1">
+                    <i class="fa-solid fa-cloud-arrow-down text-sm"></i>
+                    <span>Pull (Download)</span>
+                </button>
+            </div>
+
+            <div id="sync-status-msg" class="text-center text-xs font-semibold py-1.5 hidden rounded-lg bg-slate-950"></div>
+        </div>
+    </div>
+
+    <!-- Active Draft Indicator Banner -->
+    <div class="bg-emerald-950/60 border-b border-emerald-900 px-4 py-1.5 text-center text-xxs text-emerald-400 font-medium flex items-center justify-center space-x-1.5">
+        <i class="fa-solid fa-shield-halved animate-pulse"></i>
+        <span>Active Draft Auto-Protected locally. Use "Sync Cloud" to sync with other devices.</span>
+    </div>
 
     <!-- Main Content Grid -->
     <main class="flex-grow max-w-7xl w-full mx-auto px-4 py-4 md:py-6 grid grid-cols-1 lg:grid-cols-12 gap-6">
 
-        <!-- Left Column: Products List & Controls (7 cols) -->
+        <!-- Left Column: Products -->
         <section class="lg:col-span-7 flex flex-col space-y-4">
 
             <!-- Quick Actions & Search -->
@@ -103,12 +145,12 @@
                         <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-slate-500">
                             <i class="fa-solid fa-magnifying-glass"></i>
                         </span>
-                        <input type="text" id="search-input" placeholder="Search by name, SKU, barcode or category..."
+                        <input type="text" id="search-input" placeholder="Search by name, SKU or category..."
                             class="w-full pl-9 pr-4 py-2.5 bg-slate-900 border border-slate-800 rounded-xl text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent text-sm">
                     </div>
 
                     <button onclick="toggleScanner()" class="px-4 py-2.5 bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold rounded-xl flex items-center justify-center space-x-2 transition duration-200 shadow-lg shadow-amber-500/10">
-                        <i class="fa-solid fa-camera text-sm"></i>
+                        <i class="fa-solid fa-camera"></i>
                         <span class="text-xs uppercase tracking-wider">Scan Barcode</span>
                     </button>
                 </div>
@@ -167,7 +209,19 @@
 
             <!-- Products List Container -->
             <div class="flex-grow overflow-y-auto max-h-[60vh] lg:max-h-[70vh] space-y-3 pr-1" id="products-list-container">
-                <!-- Loaded dynamically -->
+                <!-- Landing view helper when catalog is empty -->
+                <div class="text-center py-16 bg-slate-950 border border-slate-800 rounded-3xl p-6">
+                    <div class="w-16 h-16 bg-amber-500/10 text-amber-500 rounded-2xl flex items-center justify-center mx-auto text-3xl mb-4">
+                        <i class="fa-solid fa-file-csv"></i>
+                    </div>
+                    <h3 class="text-lg font-bold text-white">Import Your Product Catalog</h3>
+                    <p class="text-slate-400 text-xs mt-2 max-w-sm mx-auto leading-relaxed">
+                        Click the button below or "Load CSV" at the top to select your <code class="text-amber-400">export_items.csv</code> file.
+                    </p>
+                    <button onclick="triggerCSVImport()" class="mt-5 px-6 py-2.5 bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold rounded-xl text-xs uppercase tracking-wider transition duration-200">
+                        Choose export_items.csv
+                    </button>
+                </div>
             </div>
 
         </section>
@@ -188,7 +242,11 @@
                 </div>
 
                 <div class="flex-grow overflow-y-auto p-4 space-y-3 min-h-[200px] max-h-[45vh]" id="order-items-container">
-                    <!-- Loaded dynamically -->
+                    <div class="flex flex-col items-center justify-center py-12 text-slate-500 text-center">
+                        <i class="fa-solid fa-basket-shopping text-4xl mb-3 text-slate-700"></i>
+                        <p class="text-sm font-medium">Order sheet is empty.</p>
+                        <p class="text-xs mt-1 text-slate-600">Enter box/piece quantities to build order.</p>
+                    </div>
                 </div>
 
                 <div class="p-4 border-t border-slate-800 bg-slate-950/90 rounded-b-2xl space-y-3">
@@ -230,7 +288,7 @@
 
     </main>
 
-    <!-- Mobile Navigation / Footer Drawer helper -->
+    <!-- Mobile Navigation Bar -->
     <div class="lg:hidden fixed bottom-0 inset-x-0 bg-slate-950 border-t border-slate-800 px-4 py-3 z-30 flex items-center justify-between shadow-2xl">
         <div class="flex items-center space-x-3">
             <div class="relative">
@@ -240,145 +298,96 @@
                 <span id="mobile-cart-badge" class="absolute -top-1.5 -right-1.5 bg-amber-500 text-slate-950 text-xxs font-extrabold rounded-full px-1.5 min-w-[18px] text-center border-2 border-slate-950">0</span>
             </div>
             <div>
-                <p class="text-xs text-slate-400">Draft Order</p>
+                <p class="text-xs text-slate-400">Active Order</p>
                 <p class="text-sm font-bold text-white" id="mobile-cart-summary">0 Products Selected</p>
             </div>
         </div>
 
         <button onclick="scrollToOrderSheet()" class="px-4 py-2 bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold rounded-xl text-xs uppercase tracking-wider transition">
-            View Order Sheet
+            View Sheet
         </button>
     </div>
 
-    <!-- CATALOG MANAGER MODAL (Add / Edit / Delete Products directly) -->
-    <div id="catalog-manager-modal" class="hidden fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-4">
-        <div class="bg-slate-900 border border-slate-800 rounded-3xl p-6 max-w-4xl w-full max-h-[90vh] flex flex-col shadow-2xl overflow-hidden">
+    <!-- Manage Catalog Modal -->
+    <div id="catalog-modal" class="hidden fixed inset-0 z-50 bg-slate-950/80 flex items-center justify-center p-4">
+        <div class="bg-slate-900 border border-slate-800 rounded-3xl p-6 max-w-lg w-full space-y-4 shadow-2xl relative max-h-[90vh] overflow-y-auto">
+            <button onclick="toggleCatalogModal()" class="absolute top-4 right-4 text-slate-400 hover:text-white">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
 
-            <div class="flex justify-between items-center pb-4 border-b border-slate-800">
-                <div class="flex items-center space-x-2 text-amber-400">
-                    <i class="fa-solid fa-gears text-xl"></i>
-                    <h2 class="text-lg font-bold text-white">Catalog Product Manager</h2>
+            <h3 class="text-lg font-bold text-white flex items-center">
+                <i class="fa-solid fa-folder-gear mr-2 text-purple-400"></i>
+                Manage Product Catalog
+            </h3>
+
+            <p class="text-xs text-slate-400">Add new items or modify your existing catalog of products. Changes are saved automatically.</p>
+
+            <div class="bg-slate-950 p-4 rounded-xl border border-slate-800 space-y-3">
+                <h4 class="text-xs font-bold text-amber-400 uppercase tracking-wider">Add / Edit Product</h4>
+
+                <div class="grid grid-cols-2 gap-2 text-xs">
+                    <div>
+                        <label class="block text-slate-400 mb-1">Product Name</label>
+                        <input type="text" id="cat-name-input" placeholder="e.g. Wahl Detailer Red" class="w-full bg-slate-900 border border-slate-800 rounded-lg px-2.5 py-1.5 text-white">
+                    </div>
+                    <div>
+                        <label class="block text-slate-400 mb-1">SKU (Unique)</label>
+                        <input type="text" id="cat-sku-input" placeholder="e.g. 1163" class="w-full bg-slate-900 border border-slate-800 rounded-lg px-2.5 py-1.5 text-white">
+                    </div>
                 </div>
-                <button onclick="closeCatalogManager()" class="text-slate-400 hover:text-white p-1 rounded-lg bg-slate-950 border border-slate-800 transition">
-                    <i class="fa-solid fa-xmark text-lg"></i>
-                </button>
-            </div>
 
-            <!-- Form: Add or Edit Product -->
-            <div class="py-4 border-b border-slate-800">
-                <h3 id="form-title" class="text-xs font-bold uppercase tracking-wider text-amber-500 mb-3 flex items-center">
-                    <i class="fa-solid fa-circle-plus mr-1.5"></i> Add New Product
-                </h3>
-                <form id="product-form" onsubmit="saveProductForm(event)" class="grid grid-cols-1 md:grid-cols-5 gap-3 text-xs">
-                    <input type="hidden" id="form-product-id">
-
-                    <div class="md:col-span-2">
-                        <label class="block text-slate-400 mb-1">Product Name *</label>
-                        <input type="text" id="form-product-name" required placeholder="e.g. TSF Shaving Gel 1000ml" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-2.5 py-2 text-white">
-                    </div>
-
+                <div class="grid grid-cols-3 gap-2 text-xs">
                     <div>
-                        <label class="block text-slate-400 mb-1">SKU (Unique Code) *</label>
-                        <input type="text" id="form-product-sku" required placeholder="e.g. 1155" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-2.5 py-2 text-white">
+                        <label class="block text-slate-400 mb-1">Category</label>
+                        <input type="text" id="cat-category-input" placeholder="e.g. MACHINES" class="w-full bg-slate-900 border border-slate-800 rounded-lg px-2.5 py-1.5 text-white">
                     </div>
-
                     <div>
-                        <label class="block text-slate-400 mb-1">Category *</label>
-                        <select id="form-product-category" required class="w-full bg-slate-950 border border-slate-800 rounded-lg px-2.5 py-2 text-white">
-                            <option value="HAIR PRODUCTS">HAIR PRODUCTS</option>
-                            <option value="SHAVING">SHAVING</option>
-                            <option value="MACHINES">MACHINES</option>
-                            <option value="SPARE PARTS">SPARE PARTS</option>
-                            <option value="ACCESSORIES">ACCESSORIES</option>
-                            <option value="SKIN CARE">SKIN CARE</option>
-                            <option value="DISENFECTANTS">DISENFECTANTS</option>
-                            <option value="COMB/BRUSHES">COMB/BRUSHES</option>
-                            <option value="SCISSORS">SCISSORS</option>
-                            <option value="BEARD PRODUCTS">BEARD PRODUCTS</option>
-                            <option value="DISPOSABLES">DISPOSABLES</option>
-                            <option value="Uncategorized">Uncategorized</option>
-                        </select>
+                        <label class="block text-slate-400 mb-1">Pack Size (Qty/Box)</label>
+                        <input type="number" id="cat-pack-input" value="12" class="w-full bg-slate-900 border border-slate-800 rounded-lg px-2.5 py-1.5 text-white">
                     </div>
-
                     <div>
-                        <label class="block text-slate-400 mb-1">Pack Size (Box Count) *</label>
-                        <input type="number" id="form-product-packsize" required min="1" placeholder="12" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-2.5 py-2 text-white">
-                    </div>
-
-                    <div class="md:col-span-2">
                         <label class="block text-slate-400 mb-1">Barcode (Optional)</label>
-                        <input type="text" id="form-product-barcode" placeholder="Optional barcode scan" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-2.5 py-2 text-white">
-                    </div>
-
-                    <div class="md:col-span-1">
-                        <label class="block text-slate-400 mb-1">Sub-Variations?</label>
-                        <select id="form-product-has-vars" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-2.5 py-2 text-white" onchange="toggleFormVarsDisplay()">
-                            <option value="no">No Variations</option>
-                            <option value="yes">Sapphire, Cristal, Golden</option>
-                        </select>
-                    </div>
-
-                    <div class="md:col-span-2 flex items-end space-x-2 pt-1">
-                        <button type="submit" id="form-submit-btn" class="flex-grow py-2 bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold rounded-lg transition duration-200">
-                            Add Product
-                        </button>
-                        <button type="button" onclick="cancelFormEdit()" id="form-cancel-btn" class="hidden px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-lg transition duration-200">
-                            Cancel
-                        </button>
-                    </div>
-                </form>
-            </div>
-
-            <!-- Manage Table Area -->
-            <div class="flex-grow overflow-hidden flex flex-col py-4">
-                <div class="flex justify-between items-center mb-3">
-                    <h3 class="text-xs font-bold text-slate-400 uppercase tracking-wider">Product Catalog List</h3>
-                    <div class="flex space-x-2">
-                        <input type="text" id="manager-search" placeholder="Filter manager products..." oninput="renderManagerTable()"
-                            class="bg-slate-950 border border-slate-800 rounded-lg px-2 py-1 text-xs text-white focus:outline-none">
-                        <button onclick="resetCatalogToDefault()" class="px-2 py-1 bg-red-950/40 hover:bg-red-950 border border-red-800 text-red-400 text-xs rounded-lg transition">
-                            <i class="fa-solid fa-rotate-left mr-1"></i>Reset to Default (225 items)
-                        </button>
+                        <input type="text" id="cat-barcode-input" placeholder="e.g. 50123456" class="w-full bg-slate-900 border border-slate-800 rounded-lg px-2.5 py-1.5 text-white">
                     </div>
                 </div>
 
-                <div class="flex-grow overflow-y-auto border border-slate-800 rounded-xl bg-slate-950/40">
-                    <table class="w-full text-xs text-left border-collapse">
-                        <thead class="bg-slate-950 text-slate-400 uppercase text-[10px] sticky top-0 border-b border-slate-800">
-                            <tr>
-                                <th class="p-3">Product Name</th>
-                                <th class="p-3">SKU</th>
-                                <th class="p-3">Category</th>
-                                <th class="p-3 text-center">Pack Size</th>
-                                <th class="p-3 text-center">Barcode</th>
-                                <th class="p-3 text-right">Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody id="manager-table-body" class="divide-y divide-slate-800/60">
-                            <!-- Dynamic rows loaded here -->
-                        </tbody>
-                    </table>
+                <div class="flex justify-end space-x-2 pt-2">
+                    <button onclick="clearCatalogInputs()" class="px-3 py-1.5 bg-slate-900 text-slate-400 hover:text-white text-xs font-semibold rounded-lg">Clear</button>
+                    <button onclick="saveProductToCatalog()" class="px-4 py-1.5 bg-purple-500 hover:bg-purple-400 text-slate-950 font-bold text-xs rounded-lg uppercase tracking-wider">Save Product</button>
                 </div>
             </div>
 
+            <div class="space-y-2">
+                <h4 class="text-xs font-bold text-slate-400 uppercase tracking-wider">Catalog Operations</h4>
+                <div class="flex flex-col sm:flex-row gap-2">
+                    <button onclick="resetToPrebakedCatalog()" class="flex-1 py-2 bg-red-950/40 hover:bg-red-950 border border-red-900 text-red-400 text-xs font-bold rounded-xl transition">
+                        Reset to Default 225 Items
+                    </button>
+                    <button onclick="deleteProductFromCatalogPrompt()" class="flex-1 py-2 bg-slate-950 hover:bg-slate-900 text-slate-300 text-xs font-bold rounded-xl border border-slate-800 transition">
+                        Delete Product by SKU
+                    </button>
+                </div>
+            </div>
         </div>
     </div>
 
-    <!-- Hidden PDF Printing Canvas (Screen offset so mobile renders it perfectly) -->
-    <div style="position: fixed; left: -9999px; top: 0;">
-        <div id="pdf-print-template" style="width: 680px; padding: 24px; font-family: 'Plus Jakarta Sans', sans-serif; background-color: white; color: #1e293b; box-sizing: border-box;">
+    <!-- Hidden PDF Template -->
+    <div class="hidden">
+        <div id="pdf-print-template" style="width: 680px; padding: 24px; font-family: 'Plus Jakarta Sans', sans-serif; background-color: white; color: #1e293b; box-sizing: border-box; position: fixed; left: -9999px;">
             <!-- Header with logo and details -->
             <div style="border-bottom: 2px solid #0f172a; padding-bottom: 20px; margin-bottom: 20px;">
                 <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
                     <div style="display: flex; align-items: center;">
-                        <!-- Logo (tries to render same logo.jpg as website header) -->
-                        <div style="float: left; margin-right: 12px;">
-                            <img id="pdf-logo-img" src="./logo.jpg" alt="POWER style." style="max-height: 44px; display: block;" onerror="this.style.display='none'; document.getElementById('pdf-logo-fallback').style.display='block';">
-                            <div id="pdf-logo-fallback" style="display: none; width: 44px; height: 44px; background: linear-gradient(135deg, #f59e0b, #facc15); border-radius: 10px; text-align: center; line-height: 44px;">
-                                <span style="font-size: 20px; color: #0f172a;">✂</span>
-                            </div>
+                        <img id="pdf-logo-image" src="logo.jpg" alt="Logo" style="height: 48px; width: auto; margin-right: 12px; float: left; display: block;" onerror="onPdfLogoError()">
+                        <div id="pdf-logo-fallback" style="width: 44px; height: 44px; background: linear-gradient(135deg, #f59e0b, #facc15); border-radius: 10px; display: none; align-items: center; justify-content: center; margin-right: 12px; float: left;">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#0f172a" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                <circle cx="6" cy="6" r="3"></circle>
+                                <circle cx="6" cy="18" r="3"></circle>
+                                <line x1="9.8" y1="8.2" x2="20" y2="18.4"></line>
+                                <line x1="20" y1="5.6" x2="9.8" y2="15.8"></line>
+                            </svg>
                         </div>
-                        <div style="float: left;">
+                        <div style="float: left; margin-left: 4px;">
                             <h1 style="font-size: 22px; font-weight: 800; color: #0f172a; margin: 0; line-height: 1.1; letter-spacing: -0.5px;">
                                 Powerstyle<span style="color: #d97706; font-weight: 300;">-0rder</span>
                             </h1>
@@ -438,15 +447,9 @@
         </div>
     </div>
 
-    <!-- Core Script Logic -->
+    <!-- Database and App Script -->
     <script>
-        let currentCategory = 'ALL';
-        let searchQuery = '';
-        let barcodeScanner = null;
-        let isScannerActive = false;
-
-        // Load default DB or user-saved DB
-        const DEFAULT_CATALOG = [
+        const PREBAKED_PRODUCTS = [
   {
     "id": "1005",
     "name": "Andis Cool Care",
@@ -800,7 +803,7 @@
   },
   {
     "id": "10032",
-    "name": "Crèè Oxicreme 150ml",
+    "name": "Cre\u0300e\u0300 Oxicreme 150ml",
     "sku": "10032",
     "category": "HAIR PRODUCTS",
     "barcode": "",
@@ -2513,17 +2516,19 @@
   }
 ];
 
-        let products = JSON.parse(localStorage.getItem('pso_catalog_products'));
-        if (!products || products.length === 0) {
-            products = [...DEFAULT_CATALOG];
-            localStorage.setItem('pso_catalog_products', JSON.stringify(products));
-        }
-
         let order = JSON.parse(localStorage.getItem('pso_active_order')) || {};
         let barcodeMap = JSON.parse(localStorage.getItem('pso_barcode_map')) || {};
+        let customVariations = JSON.parse(localStorage.getItem('pso_custom_variations')) || {};
         let orderRef = localStorage.getItem('pso_ref') || '#PSO-' + Math.floor(100000 + Math.random() * 900000);
+        let products = JSON.parse(localStorage.getItem('pso_catalog_products')) || PREBAKED_PRODUCTS;
 
         localStorage.setItem('pso_ref', orderRef);
+        localStorage.setItem('pso_catalog_products', JSON.stringify(products));
+
+        let currentCategory = 'ALL';
+        let searchQuery = '';
+        let barcodeScanner = null;
+        let isScannerActive = false;
 
         window.onload = function() {
             document.getElementById('search-input').addEventListener('input', (e) => {
@@ -2531,40 +2536,131 @@
                 renderProducts();
             });
             initCatalogUI();
+
+            // Sync saved passcode in inputs
+            const savedPass = localStorage.getItem('pso_sync_passcode') || '';
+            if (savedPass) {
+                document.getElementById('sync-passcode-input').value = savedPass;
+            }
         };
 
-        // Formats quantities dynamically: E.g., "1 Box", "12 Pcs", "1 Box & 2 Pcs", "2 Boxes"
-        function formatQty(total, packSize) {
-            if (total <= 0) return "0 Pcs";
-
-            // Special Case: if pack size is 1, boxes and pieces are the same, just return pcs
-            if (packSize === 1) {
-                return total === 1 ? "1 Pc" : `${total} Pcs`;
-            }
-
-            const boxes = Math.floor(total / packSize);
-            const pcs = total % packSize;
-
-            let boxStr = "";
-            if (boxes > 0) {
-                boxStr = boxes === 1 ? "1 Box" : `${boxes} Boxes`;
-            }
-
-            let pcsStr = "";
-            if (pcs > 0) {
-                pcsStr = pcs === 1 ? "1 Pc" : `${pcs} Pcs`;
-            }
-
-            if (boxStr && pcsStr) {
-                return `${boxStr} & ${pcsStr}`;
-            } else if (boxStr) {
-                return boxStr;
-            } else if (pcsStr) {
-                return pcsStr;
-            }
-            return "0 Pcs";
+        function toggleSyncModal() {
+            const modal = document.getElementById('sync-modal');
+            modal.classList.toggle('hidden');
+            document.getElementById('sync-status-msg').classList.add('hidden');
         }
 
+        async function pushToCloud() {
+            const rawPasscode = document.getElementById('sync-passcode-input').value.trim();
+            const passcode = rawPasscode.toLowerCase().replace(/[^a-z0-9_-]/g, '');
+
+            if (!passcode) {
+                showSyncStatus("Please enter a valid passcode (letters & numbers only)!", "red");
+                return;
+            }
+
+            localStorage.setItem('pso_sync_passcode', passcode);
+            showSyncStatus("Syncing: Uploading data to Cloud...", "blue");
+
+            const payload = {
+                order: order,
+                products: products,
+                barcodeMap: barcodeMap,
+                customVariations: customVariations,
+                orderRef: orderRef,
+                timestamp: Date.now()
+            };
+
+            try {
+                // Anonymous, free CORS-enabled bucket
+                const bucket = "pso_sync_2026_x9284";
+                const url = `https://kvdb.io/${bucket}/${passcode}`;
+
+                const response = await fetch(url, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                if (response.ok) {
+                    showSyncStatus("Cloud Sync Successful! 🎉 Your changes are uploaded.", "green");
+                    setTimeout(() => toggleSyncModal(), 1800);
+                } else {
+                    throw new Error("Server responded with code: " + response.status);
+                }
+            } catch (error) {
+                console.error("Cloud push failed:", error);
+                showSyncStatus("Upload failed! Check your internet connection.", "red");
+            }
+        }
+
+        async function pullFromCloud() {
+            const rawPasscode = document.getElementById('sync-passcode-input').value.trim();
+            const passcode = rawPasscode.toLowerCase().replace(/[^a-z0-9_-]/g, '');
+
+            if (!passcode) {
+                showSyncStatus("Please enter a passcode to download!", "red");
+                return;
+            }
+
+            localStorage.setItem('pso_sync_passcode', passcode);
+            showSyncStatus("Syncing: Downloading data from Cloud...", "blue");
+
+            try {
+                const bucket = "pso_sync_2026_x9284";
+                const url = `https://kvdb.io/${bucket}/${passcode}`;
+
+                const response = await fetch(url);
+                if (response.status === 404) {
+                    showSyncStatus("No data found for this passcode! Push first.", "red");
+                    return;
+                }
+
+                if (!response.ok) {
+                    throw new Error("Server error: " + response.status);
+                }
+
+                const data = await response.json();
+                if (data && typeof data === 'object') {
+                    // Update variables
+                    if (data.order) order = data.order;
+                    if (data.products) products = data.products;
+                    if (data.barcodeMap) barcodeMap = data.barcodeMap;
+                    if (data.customVariations) customVariations = data.customVariations;
+                    if (data.orderRef) orderRef = data.orderRef;
+
+                    // Save to local Storage
+                    localStorage.setItem('pso_active_order', JSON.stringify(order));
+                    localStorage.setItem('pso_catalog_products', JSON.stringify(products));
+                    localStorage.setItem('pso_barcode_map', JSON.stringify(barcodeMap));
+                    localStorage.setItem('pso_custom_variations', JSON.stringify(customVariations));
+                    localStorage.setItem('pso_ref', orderRef);
+
+                    // Render UI again
+                    initCatalogUI();
+
+                    showSyncStatus("Cloud Sync Successful! 🎉 Data updated on this device.", "green");
+                    setTimeout(() => toggleSyncModal(), 1800);
+                } else {
+                    throw new Error("Invalid data format received.");
+                }
+            } catch (error) {
+                console.error("Cloud pull failed:", error);
+                showSyncStatus("Download failed! Check passcode or connection.", "red");
+            }
+        }
+
+        function showSyncStatus(msg, color) {
+            const el = document.getElementById('sync-status-msg');
+            el.innerText = msg;
+            el.classList.remove('hidden', 'text-blue-400', 'text-red-400', 'text-green-400');
+            if (color === 'blue') el.classList.add('text-blue-400');
+            if (color === 'red') el.classList.add('text-red-400');
+            if (color === 'green') el.classList.add('text-green-400');
+            el.classList.remove('hidden');
+        }
+
+        // CSV parsing triggers
         function triggerCSVImport() {
             document.getElementById('csv-file-input').click();
         }
@@ -2646,6 +2742,9 @@
         }
 
         function initCatalogUI() {
+            products.forEach(p => {
+                if (customVariations[p.id]) p.variations = customVariations[p.id];
+            });
             renderCategories();
             renderProducts();
             updateOrderSummary();
@@ -2674,6 +2773,32 @@
             });
         }
 
+        // Formats quantities dynamically: E.g., "1 Box", "12 Pcs", "1 Box & 2 Pcs", "2 Boxes"
+        function formatQty(total, packSize) {
+            if (total <= 0) return "0 Pcs";
+            const boxes = Math.floor(total / packSize);
+            const pcs = total % packSize;
+
+            let boxStr = "";
+            if (boxes > 0) {
+                boxStr = boxes === 1 ? "1 Box" : `${boxes} Boxes`;
+            }
+
+            let pcsStr = "";
+            if (pcs > 0) {
+                pcsStr = pcs === 1 ? "1 Pc" : `${pcs} Pcs`;
+            }
+
+            if (boxStr && pcsStr) {
+                return `${boxStr} & ${pcsStr}`;
+            } else if (boxStr) {
+                return boxStr;
+            } else if (pcsStr) {
+                return pcsStr;
+            }
+            return "0 Pcs";
+        }
+
         function renderProducts() {
             const container = document.getElementById('products-list-container');
             container.innerHTML = '';
@@ -2681,8 +2806,7 @@
             const filtered = products.filter(p => {
                 const matchesCat = currentCategory === 'ALL' || p.category === currentCategory;
                 const matchesSearch = p.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                                      p.sku.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                                      (p.barcode && p.barcode.includes(searchQuery));
+                                      p.sku.toLowerCase().includes(searchQuery.toLowerCase());
                 return matchesCat && matchesSearch;
             });
 
@@ -2702,7 +2826,7 @@
                         <div>
                             <span class="px-2 py-0.5 bg-slate-900 rounded text-[10px] text-amber-400 font-bold uppercase">${p.category}</span>
                             <h3 class="text-sm font-bold text-white mt-1">${p.name}</h3>
-                            <p class="text-xs text-slate-500">SKU: ${p.sku} ${p.barcode ? '| Barcode: ' + p.barcode : ''}</p>
+                            <p class="text-xs text-slate-500">SKU: ${p.sku}</p>
                         </div>
                         <button onclick="changePackSize('${p.id}')" class="text-xs bg-slate-900 px-2 py-1 rounded border border-slate-800 font-bold text-slate-200" title="Click to change custom box quantity">
                             ${p.packSize} Pcs/Box
@@ -2710,21 +2834,19 @@
                     </div>`;
 
                 let inputsHtml = "";
-
-                // CRITICAL CORRECTION (2): If Pack Size is 1, only show a single Quantity input to avoid Boxes/Pcs čonflict!
                 if (p.packSize === 1) {
+                    // Optimized: Only 1 Quantity Input field when packSize is 1
                     const total = order[p.id] ? order[p.id].total : 0;
                     inputsHtml = `
-                        <div class="bg-slate-900/50 p-3 rounded-xl flex items-center justify-between">
-                            <span class="text-xs font-semibold text-slate-300">Quantity (Pcs)</span>
+                        <div class="bg-slate-900/50 p-3 rounded-xl flex items-center justify-between text-xs">
+                            <span class="text-slate-400 font-semibold">Quantity (Pcs)</span>
                             <div class="flex items-center space-x-2">
-                                <button onclick="adjustSingleQty('${p.id}', -1)" class="w-8 h-8 rounded bg-slate-900 font-bold hover:bg-slate-800 transition">-</button>
-                                <input type="number" id="single-qty-${p.id}" value="${total}" onchange="onSingleQtyChange('${p.id}')" class="w-14 text-center bg-slate-950 border border-slate-800 rounded py-1 text-xs text-white">
-                                <button onclick="adjustSingleQty('${p.id}', 1)" class="w-8 h-8 rounded bg-slate-900 font-bold hover:bg-slate-800 transition">+</button>
+                                <button onclick="adjustPieces('${p.id}', -1)" class="w-8 h-8 rounded bg-slate-900 font-bold text-white">-</button>
+                                <input type="number" id="pcs-${p.id}" value="${total}" onchange="onSingleQtyChange('${p.id}')" class="w-12 text-center bg-slate-950 rounded py-1 font-bold text-amber-400">
+                                <button onclick="adjustPieces('${p.id}', 1)" class="w-8 h-8 rounded bg-slate-900 font-bold text-white">+</button>
                             </div>
                         </div>`;
-                }
-                else if (!p.variations || p.variations.length === 0) {
+                } else if (!p.variations || p.variations.length === 0) {
                     const total = order[p.id] ? order[p.id].total : 0;
                     const boxes = Math.floor(total / p.packSize);
                     const pcs = total % p.packSize;
@@ -2733,17 +2855,17 @@
                             <div class="text-center">
                                 <span class="text-xxs text-slate-400">Boxes</span>
                                 <div class="flex items-center justify-center space-x-1 mt-1">
-                                    <button onclick="adjustBox('${p.id}', -1)" class="w-7 h-7 rounded bg-slate-900 font-bold hover:bg-slate-800 transition">-</button>
+                                    <button onclick="adjustBox('${p.id}', -1)" class="w-7 h-7 rounded bg-slate-900 font-bold">-</button>
                                     <input type="number" id="box-${p.id}" value="${boxes}" onchange="onInputChange('${p.id}')" class="w-10 text-center bg-slate-950 rounded text-xs py-0.5">
-                                    <button onclick="adjustBox('${p.id}', 1)" class="w-7 h-7 rounded bg-slate-900 font-bold hover:bg-slate-800 transition">+</button>
+                                    <button onclick="adjustBox('${p.id}', 1)" class="w-7 h-7 rounded bg-slate-900 font-bold">+</button>
                                 </div>
                             </div>
                             <div class="text-center">
                                 <span class="text-xxs text-slate-400">Pieces</span>
                                 <div class="flex items-center justify-center space-x-1 mt-1">
-                                    <button onclick="adjustPieces('${p.id}', -1)" class="w-7 h-7 rounded bg-slate-900 font-bold hover:bg-slate-800 transition">-</button>
+                                    <button onclick="adjustPieces('${p.id}', -1)" class="w-7 h-7 rounded bg-slate-900 font-bold">-</button>
                                     <input type="number" id="pcs-${p.id}" value="${pcs}" onchange="onInputChange('${p.id}')" class="w-10 text-center bg-slate-950 rounded text-xs py-0.5">
-                                    <button onclick="adjustPieces('${p.id}', 1)" class="w-7 h-7 rounded bg-slate-900 font-bold hover:bg-slate-800 transition">+</button>
+                                    <button onclick="adjustPieces('${p.id}', 1)" class="w-7 h-7 rounded bg-slate-900 font-bold">+</button>
                                 </div>
                             </div>
                         </div>`;
@@ -2779,20 +2901,6 @@
                 card.innerHTML = headerHtml + inputsHtml;
                 container.appendChild(card);
             });
-        }
-
-        // Qty adjustments for Pack Size = 1
-        function adjustSingleQty(id, delta) {
-            const p = products.find(prod => prod.id === id);
-            let current = order[id]?.total || 0;
-            updateProductTotal(p, Math.max(0, current + delta));
-            renderProducts();
-        }
-
-        function onSingleQtyChange(id) {
-            const p = products.find(prod => prod.id === id);
-            const val = parseInt(document.getElementById(`single-qty-${id}`).value) || 0;
-            updateProductTotal(p, Math.max(0, val));
         }
 
         function changePackSize(id) {
@@ -2832,11 +2940,17 @@
             updateProductTotal(p, boxes * p.packSize + pcs);
         }
 
+        function onSingleQtyChange(id) {
+            const p = products.find(prod => prod.id === id);
+            const qty = parseInt(document.getElementById(`pcs-${id}`).value) || 0;
+            updateProductTotal(p, Math.max(0, qty));
+        }
+
         function updateProductTotal(p, total) {
             if (total <= 0) {
                 delete order[p.id];
             } else {
-                order[p.id] = { name: p.name, sku: p.sku, packSize: p.packSize, total, variations: order[p.id]?.variations || [] };
+                order[p.id] = { name: p.name, sku: p.sku, packSize: p.packSize, total, variations: [] };
             }
             saveState();
             updateOrderSummary();
@@ -2869,7 +2983,7 @@
             const rollup = document.getElementById(`rollup-${id}`);
             if (rollup) {
                 const tot = order[id] ? order[id].total : 0;
-                rollup.innerText = formatQty(tot, p.packSize);
+                rollup.innerText = `${formatQty(tot, p.packSize)}`;
             }
         }
 
@@ -2877,22 +2991,10 @@
             const p = products.find(prod => prod.id === id);
             const name = prompt("Variation name (e.g. Lavender, Lemon):");
             if (name) {
-                if(!p.variations) p.variations = [];
                 p.variations.push({ name, total: 0 });
-
-                // Save custom variations globally and persist
-                let customVars = JSON.parse(localStorage.getItem('pso_custom_variations')) || {};
-                customVars[id] = p.variations;
-                localStorage.setItem('pso_custom_variations', JSON.stringify(customVars));
-
-                // Sync to overall catalog list in localStorage
-                let currentCatalogList = JSON.parse(localStorage.getItem('pso_catalog_products')) || [];
-                let catalogProd = currentCatalogList.find(cp => cp.id === id);
-                if (catalogProd) {
-                    catalogProd.variations = p.variations;
-                    localStorage.setItem('pso_catalog_products', JSON.stringify(currentCatalogList));
-                }
-
+                customVariations[id] = p.variations;
+                localStorage.setItem('pso_custom_variations', JSON.stringify(customVariations));
+                saveState();
                 renderProducts();
             }
         }
@@ -2902,15 +3004,11 @@
             container.innerHTML = '';
             const keys = Object.keys(order);
             document.getElementById('cart-unique-count').innerText = keys.length;
+            document.getElementById('mobile-cart-badge').innerText = keys.length;
 
-            // Set mobile badges
-            const mobileBadge = document.getElementById('mobile-cart-badge');
-            const mobileSummary = document.getElementById('mobile-cart-summary');
-            if (mobileBadge) mobileBadge.innerText = keys.length;
-            if (mobileSummary) {
-                let totalQuantitySum = keys.reduce((acc, k) => acc + (order[k]?.total || 0), 0);
-                mobileSummary.innerText = `${keys.length} items (${totalQuantitySum} pcs)`;
-            }
+            let totalQuantitySum = 0;
+            keys.forEach(k => totalQuantitySum += order[k].total);
+            document.getElementById('mobile-cart-summary').innerText = `${keys.length} items (${totalQuantitySum} pcs)`;
 
             if (keys.length === 0) {
                 container.innerHTML = `
@@ -2927,7 +3025,6 @@
                 const div = document.createElement('div');
                 div.className = "bg-slate-900 border border-slate-800 rounded-xl p-3 relative space-y-1 text-xs";
 
-                // CRITICAL CORRECTION (1): No more "1 Box & 0 Pcs", use formatQty directly for clean representation
                 let qtyStr = formatQty(item.total, item.packSize);
                 let varsStr = item.variations.map(v => `
                     <div class="pl-3 border-l border-slate-800 text-slate-400 mt-1">
@@ -2968,6 +3065,7 @@
 
         function saveState() {
             localStorage.setItem('pso_active_order', JSON.stringify(order));
+            localStorage.setItem('pso_catalog_products', JSON.stringify(products));
         }
 
         // Camera Barcode Scanning
@@ -3042,11 +3140,7 @@
             }
         }
 
-        function closeBarcodeModal() {
-            document.getElementById('barcode-assoc-modal').classList.add('hidden');
-        }
-
-        // Sharing Utilities (WhatsApp, Mail with standard %0D%0A linebreaks for reliability on tablet/phone)
+        // Sharing Utilities
         function shareWhatsApp() {
             let keys = Object.keys(order);
             if (keys.length === 0) return alert("Your order is empty!");
@@ -3070,29 +3164,20 @@
             const dealer = document.getElementById('order-dealer-name').value;
             const notes = document.getElementById('order-notes-input').value;
 
-            // %0D%0A is the only standard way to force line breaks in mailto URLs across iOS and Android mail clients!
-            let body = "PURCHASE ORDER - POWERSTYLE LTD" + "%0D%0A%0D%0A" +
-                       "Date: " + new Date().toLocaleDateString() + "%0D%0A" +
-                       "Ref: " + orderRef + "%0D%0A" +
-                       "Supplier: " + dealer + "%0D%0A" +
-                       "Notes: " + notes + "%0D%0A" +
-                       "============================" + "%0D%0A%0D%0A";
-
+            let body = `PURCHASE ORDER - POWERSTYLE LTD\n\nDate: ${new Date().toLocaleDateString()}\nRef: ${orderRef}\nSupplier: ${dealer}\nNotes: ${notes}\n============================\n\n`;
             keys.forEach((k, idx) => {
                 const item = order[k];
-                body += `${idx + 1}. ${item.name} (${formatQty(item.total, item.packSize)})` + "%0D%0A";
+                body += `${idx + 1}. ${item.name} (${formatQty(item.total, item.packSize)})\n`;
                 item.variations.forEach(v => {
-                    body += `   └─ ${v.name}: ${formatQty(v.total, item.packSize)}` + "%0D%0A";
+                    body += `   └─ ${v.name}: ${formatQty(v.total, item.packSize)}\n`;
                 });
             });
 
-            // Programmatic sanal link click to bypass popup blockers on mobile Safaris!
-            const mailtoUrl = `mailto:?subject=Purchase Order ${orderRef}&body=${body}`;
-            const mailLink = document.createElement('a');
-            mailLink.href = mailtoUrl;
-            document.body.appendChild(mailLink);
-            mailLink.click();
-            document.body.removeChild(mailLink);
+            // Programmatic sanal link click for iOS & iPad mail client support
+            const mailtoUrl = `mailto:?subject=${encodeURIComponent("Purchase Order " + orderRef)}&body=${encodeURIComponent(body)}`;
+            const a = document.createElement('a');
+            a.href = mailtoUrl;
+            a.click();
         }
 
         function exportToPDF() {
@@ -3132,12 +3217,12 @@
                 });
             });
 
-            // html2pdf parameters configured to prevent mobile scaling issue and cutoffs
+            // Create PDF with absolute fixed width to avoid truncation or whitespace
             html2pdf().set({
-                margin: 12,
+                margin: 10,
                 filename: `PO_${orderRef}.pdf`,
                 image: { type: 'jpeg', quality: 0.98 },
-                html2canvas: { scale: 2, logging: false, useCORS: true },
+                html2canvas: { scale: 2, logging: false },
                 jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
             }).from(document.getElementById('pdf-print-template')).save();
         }
@@ -3146,161 +3231,96 @@
             document.getElementById('order-items-container').scrollIntoView({ behavior: 'smooth' });
         }
 
-
-        // ============================================
-        // CATALOG MANAGER CORE INTERFACE LOGIC (NEW V3)
-        // ============================================
-        function openCatalogManager() {
-            document.getElementById('catalog-manager-modal').classList.remove('hidden');
-            renderManagerTable();
+        // Manage Catalog functions
+        function toggleCatalogModal() {
+            const modal = document.getElementById('catalog-modal');
+            modal.classList.toggle('hidden');
         }
 
-        function closeCatalogManager() {
-            document.getElementById('catalog-manager-modal').classList.add('hidden');
-            cancelFormEdit();
+        function clearCatalogInputs() {
+            document.getElementById('cat-name-input').value = '';
+            document.getElementById('cat-sku-input').value = '';
+            document.getElementById('cat-category-input').value = 'ALL';
+            document.getElementById('cat-pack-input').value = '12';
+            document.getElementById('cat-barcode-input').value = '';
         }
 
-        function toggleFormVarsDisplay() {
-            // Can be expanded if custom arbitrary variations are selected
-        }
+        function saveProductToCatalog() {
+            const name = document.getElementById('cat-name-input').value.trim();
+            const sku = document.getElementById('cat-sku-input').value.trim();
+            const category = document.getElementById('cat-category-input').value.trim().toUpperCase() || 'ALL';
+            const packSize = parseInt(document.getElementById('cat-pack-input').value) || 12;
+            const barcode = document.getElementById('cat-barcode-input').value.trim();
 
-        function saveProductForm(e) {
-            e.preventDefault();
-            const idInput = document.getElementById('form-product-id').value;
-            const name = document.getElementById('form-product-name').value.strip ? document.getElementById('form-product-name').value.strip() : document.getElementById('form-product-name').value.trim();
-            const sku = document.getElementById('form-product-sku').value.trim();
-            const category = document.getElementById('form-product-category').value;
-            const packSize = parseInt(document.getElementById('form-product-packsize').value) || 12;
-            const barcode = document.getElementById('form-product-barcode').value.trim();
-            const hasVars = document.getElementById('form-product-has-vars').value;
+            if (!name || !sku) {
+                alert("Please fill in both Name and SKU code!");
+                return;
+            }
 
-            let variations = [];
-            if (hasVars === 'yes') {
-                variations = [
+            const existingIndex = products.findIndex(p => p.sku === sku);
+            const productData = {
+                id: sku,
+                name: name,
+                sku: sku,
+                category: category,
+                barcode: barcode,
+                packSize: packSize,
+                variations: name.toLowerCase().includes('tsf shaving gel') ? [
                     { name: "Sapphire", total: 0 },
                     { name: "Cristal", total: 0 },
                     { name: "Golden", total: 0 }
-                ];
-            }
+                ] : []
+            };
 
-            if (idInput) {
-                // EDIT MODE
-                const idx = products.findIndex(p => p.id === idInput);
-                if (idx !== -1) {
-                    products[idx].name = name;
-                    products[idx].sku = sku;
-                    products[idx].category = category;
-                    products[idx].packSize = packSize;
-                    products[idx].barcode = barcode;
-                    if (hasVars === 'yes' && (!products[idx].variations || products[idx].variations.length === 0)) {
-                        products[idx].variations = variations;
-                    } else if (hasVars === 'no') {
-                        products[idx].variations = [];
-                    }
-                }
+            if (existingIndex !== -1) {
+                products[existingIndex] = productData;
+                alert(`Product [SKU: ${sku}] updated in catalog!`);
             } else {
-                // ADD MODE
-                // Check if SKU already exists
-                if (products.some(p => p.sku === sku)) {
-                    alert("This SKU already exists in your catalog!");
-                    return;
-                }
-                const newId = sku || 'id-' + Date.now();
-                products.push({
-                    id: newId,
-                    name,
-                    sku,
-                    category,
-                    barcode,
-                    packSize,
-                    variations
-                });
+                products.push(productData);
+                alert(`Product "${name}" added to catalog!`);
             }
 
             localStorage.setItem('pso_catalog_products', JSON.stringify(products));
-            cancelFormEdit();
-            renderManagerTable();
             initCatalogUI();
-            alert("Product catalog updated successfully!");
+            clearCatalogInputs();
+            toggleCatalogModal();
         }
 
-        function editProductInManager(id) {
-            const p = products.find(prod => prod.id === id);
-            if (!p) return;
-
-            document.getElementById('form-product-id').value = p.id;
-            document.getElementById('form-product-name').value = p.name;
-            document.getElementById('form-product-sku').value = p.sku;
-            document.getElementById('form-product-category').value = p.category;
-            document.getElementById('form-product-packsize').value = p.packSize;
-            document.getElementById('form-product-barcode').value = p.barcode || '';
-            document.getElementById('form-product-has-vars').value = (p.variations && p.variations.length > 0) ? 'yes' : 'no';
-
-            document.getElementById('form-title').innerHTML = '<i class="fa-solid fa-pen-to-square mr-1.5"></i> Edit Product';
-            document.getElementById('form-submit-btn').innerText = 'Save Changes';
-            document.getElementById('form-cancel-btn').classList.remove('hidden');
-        }
-
-        function cancelFormEdit() {
-            document.getElementById('product-form').reset();
-            document.getElementById('form-product-id').value = '';
-            document.getElementById('form-title').innerHTML = '<i class="fa-solid fa-circle-plus mr-1.5"></i> Add New Product';
-            document.getElementById('form-submit-btn').innerText = 'Add Product';
-            document.getElementById('form-cancel-btn').add ? document.getElementById('form-cancel-btn').add('hidden') : document.getElementById('form-cancel-btn').classList.add('hidden');
-        }
-
-        function deleteProductInManager(id) {
-            if (confirm("Are you sure you want to delete this product from the catalog? This will also remove it from any active orders.")) {
-                products = products.filter(p => p.id !== id);
-                delete order[id];
-                localStorage.setItem('pso_catalog_products', JSON.stringify(products));
-                saveState();
-                renderManagerTable();
-                initCatalogUI();
+        function deleteProductFromCatalogPrompt() {
+            const sku = prompt("Enter the SKU of the product you want to delete:");
+            if (!sku) return;
+            const index = products.findIndex(p => p.sku === sku);
+            if (index !== -1) {
+                if (confirm(`Are you sure you want to delete "${products[index].name}" from catalog?`)) {
+                    products.splice(index, 1);
+                    localStorage.setItem('pso_catalog_products', JSON.stringify(products));
+                    initCatalogUI();
+                    alert("Product deleted!");
+                }
+            } else {
+                alert("Product SKU not found!");
             }
         }
 
-        function resetCatalogToDefault() {
-            if (confirm("This will reset your entire catalog back to the original 225 items. Any custom products you added will be removed. Continue?")) {
-                products = [...DEFAULT_CATALOG];
+        function resetToPrebakedCatalog() {
+            if (confirm("This will reset your catalog back to the 225 original products. Custom modifications will be lost. Proceed?")) {
+                products = PREBAKED_PRODUCTS;
                 localStorage.setItem('pso_catalog_products', JSON.stringify(products));
                 initCatalogUI();
-                renderManagerTable();
+                alert("Catalog successfully reset!");
+                toggleCatalogModal();
             }
         }
 
-        function renderManagerTable() {
-            const tbody = document.getElementById('manager-table-body');
-            tbody.innerHTML = '';
-            const search = document.getElementById('manager-search').value.toLowerCase();
+        // Logo Check Fallbacks
+        function onHeaderLogoError() {
+            document.getElementById('header-logo-image').classList.add('hidden');
+            document.getElementById('header-logo-fallback').classList.remove('hidden');
+        }
 
-            const filtered = products.filter(p =>
-                p.name.toLowerCase().includes(search) ||
-                p.sku.toLowerCase().includes(search) ||
-                p.category.toLowerCase().includes(search) ||
-                (p.barcode && p.barcode.includes(search))
-            );
-
-            filtered.forEach(p => {
-                const tr = document.createElement('tr');
-                tr.className = "border-b border-slate-800/40 hover:bg-slate-900/30";
-                tr.innerHTML = `
-                    <td class="p-3 font-semibold text-slate-200">${p.name}</td>
-                    <td class="p-3 font-mono text-slate-400">${p.sku}</td>
-                    <td class="p-3 text-slate-400">${p.category}</td>
-                    <td class="p-3 text-center font-bold text-amber-500">${p.packSize}</td>
-                    <td class="p-3 text-center font-mono text-slate-500">${p.barcode || '-'}</td>
-                    <td class="p-3 text-right space-x-1.5">
-                        <button onclick="editProductInManager('${p.id}')" class="text-amber-400 hover:text-amber-300 px-2 py-1 rounded bg-amber-500/10 hover:bg-amber-500/20 border border-amber-500/20 transition">
-                            <i class="fa-solid fa-pen-to-square"></i>
-                        </button>
-                        <button onclick="deleteProductInManager('${p.id}')" class="text-red-400 hover:text-red-300 px-2 py-1 rounded bg-red-500/10 hover:bg-red-500/20 border border-red-500/20 transition">
-                            <i class="fa-solid fa-trash"></i>
-                        </button>
-                    </td>
-                `;
-                tbody.appendChild(tr);
-            });
+        function onPdfLogoError() {
+            document.getElementById('pdf-logo-image').style.display = 'none';
+            document.getElementById('pdf-logo-fallback').style.display = 'flex';
         }
     </script>
 </body>
