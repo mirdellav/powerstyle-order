@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#211F1C">
+<title>Powerstyle-0rder</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 rx=%2220%22 fill=%22%23211F1C%22/><text x=%2250%22 y=%2266%22 font-size=%2258%22 text-anchor=%22middle%22 fill=%22%23C6952F%22 font-family=%22sans-serif%22>P</text></svg>">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div id="toast" class="toast" aria-live="polite"></div>
+
+<header class="topbar">
+  <div class="brand">
+    <span class="brand-mark">P0</span>
+    <div class="brand-text">
+      <strong>Powerstyle-0rder</strong>
+      <span>Restock ordering</span>
+    </div>
+  </div>
+  <div class="sync-status" id="syncStatus">
+    <span class="sync-dot" id="syncDot"></span>
+    <span id="syncText">Connecting&hellip;</span>
+  </div>
+  <nav class="tabs" role="tablist">
+    <button class="tab-btn is-active" data-tab="order" role="tab" aria-selected="true">Order</button>
+    <button class="tab-btn" data-tab="catalog" role="tab" aria-selected="false">Catalog</button>
+    <button class="tab-btn" data-tab="history" role="tab" aria-selected="false">History</button>
+  </nav>
+</header>
+
+<main>
+
+  <!-- ORDER TAB -->
+  <section id="tab-order" class="tab-panel is-active">
+
+    <div class="panel-grid">
+
+      <div class="col-search">
+        <div class="search-row">
+          <input id="searchInput" type="search" placeholder="Search products by name, SKU or category" autocomplete="off">
+          <button id="scanBtn" class="btn btn-outline" title="Scan barcode">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 7V4h3M21 7V4h-3M3 17v3h3M21 17v3h-3M3 12h18" stroke-linecap="round"/></svg>
+            <span>Scan</span>
+          </button>
+        </div>
+        <div id="categoryChips" class="chip-row"></div>
+        <div id="productResults" class="product-results"></div>
+      </div>
+
+      <div class="col-order">
+        <div class="order-head">
+          <h2>Current order</h2>
+          <div class="order-head-actions">
+            <input id="supplierName" type="text" placeholder="Supplier / vendor name">
+          </div>
+        </div>
+        <div id="orderLines" class="order-lines">
+          <p class="empty-hint">No items yet. Search or scan a product to add it to the order.</p>
+        </div>
+        <div class="order-summary">
+          <div class="summary-row">
+            <span>Line items</span>
+            <strong id="sumLines">0</strong>
+          </div>
+          <div class="summary-row">
+            <span>Total boxes</span>
+            <strong id="sumBoxes">0</strong>
+          </div>
+          <div class="summary-row">
+            <span>Total pieces</span>
+            <strong id="sumPieces">0</strong>
+          </div>
+        </div>
+        <div class="order-actions">
+          <button id="clearOrderBtn" class="btn btn-ghost">Clear order</button>
+          <button id="downloadPdfBtn" class="btn btn-outline">Download PDF</button>
+          <button id="shareBtn" class="btn btn-primary">Share order</button>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- CATALOG TAB -->
+  <section id="tab-catalog" class="tab-panel">
+    <div class="catalog-head">
+      <h2>Product catalog</h2>
+      <p>Set units per box and variations here. Changes sync in real time to every device signed in to this catalog.</p>
+      <input id="catalogSearch" type="search" placeholder="Search catalog">
+      <div class="catalog-io">
+        <button id="addProductBtn" class="btn btn-primary">+ Add product</button>
+        <button id="exportCatalogBtn" class="btn btn-outline">Export catalog (.json)</button>
+        <button id="importCatalogBtn" class="btn btn-outline">Import catalog (.json)</button>
+        <input id="importCatalogFile" type="file" accept="application/json" hidden>
+      </div>
+    </div>
+    <div id="catalogList" class="catalog-list"></div>
+  </section>
+
+  <!-- HISTORY TAB -->
+  <section id="tab-history" class="tab-panel">
+    <div class="catalog-head">
+      <h2>Order history</h2>
+      <p>Orders you've sent are saved to the cloud and visible from any device.</p>
+    </div>
+    <div id="historyList" class="history-list"></div>
+  </section>
+
+</main>
+
+<!-- Barcode scanner modal -->
+<div id="scanModal" class="modal">
+  <div class="modal-card">
+    <div class="modal-head">
+      <h3>Scan a barcode</h3>
+      <button id="closeScanBtn" class="icon-btn" aria-label="Close">&times;</button>
+    </div>
+    <div id="scanReaderWrap">
+      <div id="scanReader"></div>
+    </div>
+    <p id="scanStatus" class="scan-status">Point the camera at a product barcode.</p>
+  </div>
+</div>
+
+<!-- Product edit modal (catalog) -->
+<div id="editModal" class="modal">
+  <div class="modal-card">
+    <div class="modal-head">
+      <h3 id="editModalTitle">Edit product</h3>
+      <button id="closeEditBtn" class="icon-btn" aria-label="Close">&times;</button>
+    </div>
+    <div id="editModalBody"></div>
+  </div>
+</div>
+
+<!-- Share modal -->
+<div id="shareModal" class="modal">
+  <div class="modal-card">
+    <div class="modal-head">
+      <h3>Share order</h3>
+      <button id="closeShareBtn" class="icon-btn" aria-label="Close">&times;</button>
+    </div>
+    <div class="share-body">
+      <p class="share-hint">First save the PDF, then send it with one of the options below.</p>
+      <button id="shareSystemBtn" class="btn btn-primary btn-block">
+        Share PDF&hellip; <span class="btn-sub">(WhatsApp, Mail, AirDrop, etc.)</span>
+      </button>
+      <div class="share-row">
+        <a id="shareWhatsappBtn" class="btn btn-outline btn-block" target="_blank" rel="noopener">WhatsApp (text list)</a>
+        <a id="shareEmailBtn" class="btn btn-outline btn-block" target="_blank" rel="noopener">Email (text list)</a>
+      </div>
+      <p class="share-fineprint">"Share PDF" opens your device's share sheet and attaches the actual PDF file when your browser supports it (works on iPhone/iPad Safari and most Android browsers). The WhatsApp/Email buttons send a plain-text copy of the list instead, since links can't attach files directly &mdash; attach the downloaded PDF manually if you use those.</p>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
+<script type="module" src="app.js"></script>
+</body>
+</html>
