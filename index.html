@@ -5,7 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <meta name="theme-color" content="#211F1C">
 <title>Powerstyle-0rder</title>
-<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 rx=%2220%22 fill=%22%23211F1C%22/><text x=%2250%22 y=%2266%22 font-size=%2258%22 text-anchor=%22middle%22 fill=%22%23C6952F%22 font-family=%22sans-serif%22>P</text></svg>">
+<link rel="icon" href="assets/logo.jpg">
+<link rel="apple-touch-icon" href="assets/logo.jpg">
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -14,7 +15,7 @@
 
 <header class="topbar">
   <div class="brand">
-    <span class="brand-mark">P0</span>
+    <span class="brand-mark"><img src="assets/logo.jpg" alt="Powerstyle logo"></span>
     <div class="brand-text">
       <strong>Powerstyle-0rder</strong>
       <span>Restock ordering</span>
@@ -76,7 +77,7 @@
         </div>
         <div class="order-actions">
           <button id="clearOrderBtn" class="btn btn-ghost">Clear order</button>
-          <button id="downloadPdfBtn" class="btn btn-outline">Download PDF</button>
+          <button id="downloadPdfBtn" class="btn btn-pdf">Download PDF</button>
           <button id="shareBtn" class="btn btn-primary">Share order</button>
         </div>
       </div>
@@ -145,12 +146,12 @@
     </div>
     <div class="share-body">
       <p class="share-hint">First save the PDF, then send it with one of the options below.</p>
-      <button id="shareSystemBtn" class="btn btn-primary btn-block">
+      <button id="shareSystemBtn" class="btn btn-pdf btn-block">
         Share PDF&hellip; <span class="btn-sub">(WhatsApp, Mail, AirDrop, etc.)</span>
       </button>
       <div class="share-row">
-        <a id="shareWhatsappBtn" class="btn btn-outline btn-block" target="_blank" rel="noopener">WhatsApp (text list)</a>
-        <a id="shareEmailBtn" class="btn btn-outline btn-block" target="_blank" rel="noopener">Email (text list)</a>
+        <a id="shareWhatsappBtn" class="btn btn-whatsapp btn-block" target="_blank" rel="noopener">WhatsApp (text list)</a>
+        <a id="shareEmailBtn" class="btn btn-email btn-block" target="_blank" rel="noopener">Email (text list)</a>
       </div>
       <p class="share-fineprint">"Share PDF" opens your device's share sheet and attaches the actual PDF file when your browser supports it (works on iPhone/iPad Safari and most Android browsers). The WhatsApp/Email buttons send a plain-text copy of the list instead, since links can't attach files directly &mdash; attach the downloaded PDF manually if you use those.</p>
     </div>

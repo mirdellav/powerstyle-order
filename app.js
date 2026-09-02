@@ -33,6 +33,20 @@ let lastPdfFilename = null;
 let productsLoadedOnce = false;
 let orderWriteTimer = null;
 let suppressNextOrderEcho = false;
+let logoDataUrl = null;
+
+async function preloadLogo() {
+  try {
+    const res = await fetch('assets/logo.jpg');
+    const blob = await res.blob();
+    logoDataUrl = await new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => resolve(reader.result);
+      reader.onerror = reject;
+      reader.readAsDataURL(blob);
+    });
+  } catch (e) { /* PDF still works without the logo */ }
+}
 
 /* ---------------- Bootstrapping ---------------- */
 
@@ -42,6 +56,7 @@ async function init() {
   bindCatalogUI();
   bindScanUI();
   bindShareUI();
+  preloadLogo();
 
   if (!firebaseLooksConfigured()) {
     isFirebaseConfigured = false;
@@ -725,12 +740,23 @@ function generatePdf({ download }) {
   const marginX = 48;
   let y = 56;
 
+  // Brand header band
+  doc_.setFillColor(27, 24, 21);
+  doc_.rect(0, 0, 595, 86, 'F');
+  if (logoDataUrl) {
+    try { doc_.addImage(logoDataUrl, 'JPEG', marginX, 14, 58, 58); } catch (e) { /* ignore malformed image */ }
+  }
+  const textX = logoDataUrl ? marginX + 70 : marginX;
+  doc_.setTextColor(216, 154, 42);
   doc_.setFont('helvetica', 'bold');
-  doc_.setFontSize(18);
-  doc_.text('Powerstyle-0rder \u2014 Restock Order', marginX, y);
-  y += 22;
-
+  doc_.setFontSize(17);
+  doc_.text('Powerstyle-0rder', textX, 42);
+  doc_.setTextColor(230, 222, 204);
   doc_.setFont('helvetica', 'normal');
+  doc_.setFontSize(10.5);
+  doc_.text('Restock Order', textX, 60);
+  doc_.setTextColor(20, 20, 20);
+  y = 116;
   doc_.setFontSize(10);
   const supplier = document.getElementById('supplierName').value.trim();
   const dateStr = new Date().toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
