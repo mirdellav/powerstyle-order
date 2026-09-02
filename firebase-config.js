@@ -1,4 +1,4 @@
-const firebaseConfig = {
+export const firebaseConfig = {
   apiKey: "AIzaSyCRDRDEf_24Jo7Mfa1X2hWgwvYr8ZT9p98",
   authDomain: "powerstyle-order.firebaseapp.com",
   projectId: "powerstyle-order",
