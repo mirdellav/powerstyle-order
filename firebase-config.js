@@ -1,19 +1,8 @@
-// Paste the config object from your Firebase project here.
-//
-// How to get it:
-// 1. Go to https://console.firebase.google.com → create a free project.
-// 2. Project settings (gear icon) → General → "Your apps" → Add app → Web (</>).
-// 3. Firebase shows a `firebaseConfig` object — copy its values into this file.
-//
-// These values are safe to be public (they identify your project, not secret
-// keys) — real protection comes from your Firestore security rules, see
-// README.md.
-
 export const firebaseConfig = {
-  apiKey: "YOUR_API_KEY",
-  authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
-  projectId: "YOUR_PROJECT_ID",
-  storageBucket: "YOUR_PROJECT_ID.appspot.com",
-  messagingSenderId: "YOUR_SENDER_ID",
-  appId: "YOUR_APP_ID"
+  apiKey: "AIzaSyCRDRDEf_24Jo7Mfa1X2hWgwvYr8ZT9p98",
+  authDomain: "powerstyle-order.firebaseapp.com",
+  projectId: "powerstyle-order",
+  storageBucket: "powerstyle-order.firebasestorage.app",
+  messagingSenderId: "680510883642",
+  appId: "1:680510883642:web:6abf0a5d427a7c9826f203"
 };
